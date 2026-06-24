@@ -15,6 +15,26 @@ from "@/components/shared/StatCard";
 export default function SuperAdminPage() {
 
   // =========================================
+  // PASSWORD RESET MODAL
+  // =========================================
+
+  const [showResetPasswordModal,
+  setShowResetPasswordModal] =
+  useState(false);
+
+const [selectedUserId,
+  setSelectedUserId] =
+  useState("");
+
+const [resetPassword,
+  setResetPassword] =
+  useState("");
+
+const [confirmResetPassword,
+  setConfirmResetPassword] =
+  useState("");
+
+  // =========================================
   // USER DETAILS
   // =========================================
 
@@ -600,6 +620,89 @@ const suspendedUsers =
       fetchDepartments();
     };
 
+
+    // =========================================
+    // RESET PASSWORD
+    // =========================================
+
+    const handleResetPassword =
+      async () => {
+
+        if (
+          !resetPassword ||
+          !confirmResetPassword
+        ) {
+
+          alert(
+            "Please enter password"
+          );
+
+          return;
+        }
+
+        if (
+          resetPassword !==
+          confirmResetPassword
+        ) {
+
+          alert(
+            "Passwords do not match"
+          );
+
+          return;
+        }
+
+        const response =
+          await fetch(
+            "/api/reset-password",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+
+              body:
+                JSON.stringify({
+                  userId:
+                    selectedUserId,
+
+                  password:
+                    resetPassword,
+                }),
+            }
+          );
+
+        const result =
+          await response.json();
+
+        if (
+          !response.ok
+        ) {
+
+          alert(
+            result.error
+          );
+
+          return;
+        }
+
+        alert(
+          "Password reset successfully"
+        );
+
+        setShowResetPasswordModal(
+          false
+        );
+
+        setResetPassword("");
+
+        setConfirmResetPassword("");
+
+        setSelectedUserId("");
+      };
+
   // =========================================
   // LOGOUT
   // =========================================
@@ -1177,6 +1280,22 @@ const suspendedUsers =
                                   >
                                     Suspend
                                   </button>
+                                  <button
+                                    onClick={() => {
+
+                                      setSelectedUserId(
+                                        user.id
+                                      );
+
+                                      setShowResetPasswordModal(
+                                        true
+                                      );
+
+                                    }}
+                                    className="rounded bg-blue-600 px-3 py-1 text-white"
+                                  >
+                                    Reset Password
+                                  </button>
 
                                 </div>
 
@@ -1368,8 +1487,89 @@ const suspendedUsers =
             </div>
           )
         }
+        {/* =========================================
+            RESET PASSWORD MODAL
+        ========================================= */}
+
+        {
+          showResetPasswordModal && (
+
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+
+              <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+
+                <h2 className="mb-5 text-2xl font-bold">
+
+                  Reset Password
+
+                </h2>
+
+                <input
+                  type="password"
+                  placeholder="New Password"
+                  value={resetPassword}
+                  onChange={(e) =>
+                    setResetPassword(
+                      e.target.value
+                    )
+                  }
+                  className="mb-4 w-full rounded border p-3"
+                />
+
+                <input
+                  type="password"
+                  placeholder="Confirm Password"
+                  value={confirmResetPassword}
+                  onChange={(e) =>
+                    setConfirmResetPassword(
+                      e.target.value
+                    )
+                  }
+                  className="mb-4 w-full rounded border p-3"
+                />
+
+                <div className="flex justify-end gap-3">
+
+                  <button
+                    onClick={() => {
+
+                      setShowResetPasswordModal(
+                        false
+                      );
+
+                      setResetPassword("");
+
+                      setConfirmResetPassword("");
+
+                      setSelectedUserId("");
+
+                    }}
+                    className="rounded bg-gray-500 px-4 py-2 text-white"
+                  >
+
+                    Cancel
+
+                  </button>
+
+                  <button
+                    onClick={
+                      handleResetPassword
+                    }
+                    className="rounded bg-blue-600 px-4 py-2 text-white"
+                  >
+
+                    Reset Password
+
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+          )
+        }
 
       </div>
-
       );
 }
