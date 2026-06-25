@@ -1017,10 +1017,6 @@ const filteredAnalyticsMessages =
         user.id
       );
 
-      fetchCategories(
-        data.department_id
-      );
-
       fetchSentMessages(
         data.id
       );
@@ -1884,7 +1880,7 @@ const fetchTasks = async (
       setCategoryName("");
 
       fetchCategories(
-        profile.department_id
+        selectedClass
       );
     };
 
@@ -1892,44 +1888,46 @@ const fetchTasks = async (
   // FETCH CATEGORIES
   // =========================================
 
-  const fetchCategories =
-    async (
-      departmentId: string
-    ) => {
+    const fetchCategories =
+      async (
+        classId: string
+      ) => {
 
-      const {
-        data,
-        error,
-      } = await supabase
+        const {
+          data,
+          error,
+        } = await supabase
 
-        .from(
-          "message_categories"
-        )
+          .from(
+            "message_categories"
+          )
 
-        .select("*")
+          .select("*")
 
-        .eq(
-          "department_id",
-          departmentId
-        )
+          .eq(
+            "class_id",
+            classId
+          )
 
-        .order(
-          "created_at",
-          {
-            ascending: false,
-          }
+          .order(
+            "name",
+            {
+              ascending: true,
+            }
+          );
+
+        if (error) {
+
+          console.log(error);
+
+          return;
+
+        }
+
+        setCategories(
+          data || []
         );
 
-      if (error) {
-
-        console.log(error);
-
-        return;
-      }
-
-      setCategories(
-        data || []
-      );
     };
 
 // =========================================
@@ -3257,11 +3255,17 @@ console.log("Row Class:", row.class_name);
 
                 <select
                   value={selectedClass}
-                  onChange={(e) =>
-                    setSelectedClass(
-                      e.target.value
-                    )
-                  }
+                    onChange={(e) => {
+
+                      setSelectedClass(
+                        e.target.value
+                      );
+
+                      fetchCategories(
+                        e.target.value
+                      );
+
+                    }}
                   className="w-full rounded-xl border p-4 text-lg outline-none transition focus:border-blue-500"
                 >
 

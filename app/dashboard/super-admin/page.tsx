@@ -117,10 +117,34 @@ const menuItems = [
     label: "User Management",
   },
   {
+    id: "GROUPS",
+    label: "Group Management",
+  },
+  {
+    id: "MESSAGE_CATEGORIES",
+    label: "Communication Categories",
+  },
+  {
     id: "REPORTS",
     label: "Reports",
   },
 ];
+
+    // =========================================
+    // COMMUNICATION CATEGORIES
+    // =========================================
+
+    const [categoryName,
+      setCategoryName] =
+      useState("");
+
+    const [selectedCategoryGroup,
+      setSelectedCategoryGroup] =
+      useState("");
+
+    const [messageCategories,
+      setMessageCategories] =
+      useState<any[]>([]);
   // =========================================
   // INSTITUTE FORM
   // =========================================
@@ -168,6 +192,48 @@ const menuItems = [
     useState("");
 
   // =========================================
+  // GROUP MANAGEMENT
+  // =========================================
+
+  const [groupName,
+    setGroupName] =
+    useState("");
+
+  const [selectedCoordinator,
+    setSelectedCoordinator] =
+    useState("");
+
+  const [facultyList,
+    setFacultyList] =
+    useState<any[]>([]);
+
+  const [groups,
+    setGroups] =
+    useState<any[]>([]);
+
+  // =========================================
+  // GROUP MEMBERS MODAL
+  // =========================================
+
+  const [selectedGroupId,
+  setSelectedGroupId] =
+  useState("");
+
+  const [showMembersModal,
+    setShowMembersModal] =
+    useState(false);
+  // =========================================
+  // GROUP MEMBERS
+  // =========================================
+  const [students,
+  setStudents] =
+  useState<any[]>([]);
+
+  const [selectedMembers,
+    setSelectedMembers] =
+    useState<string[]>([]);
+
+  // =========================================
   // DEPARTMENT LIST
   // =========================================
 
@@ -182,6 +248,7 @@ const totalDepartments =
 
 const totalUsers =
   users.length;
+
 
   // =========================================
   // LOAD USER
@@ -236,12 +303,238 @@ const totalUsers =
 
       fetchDepartments();
 
+      fetchFacultyList();
+
+      fetchGroups();
+
+      fetchStudents();
+
+      fetchMessageCategories();
+
       fetchUsers();
     };
 
     loadUser();
 
   }, []);
+
+    // =========================================
+    // FETCH MESSAGE CATEGORIES
+    // =========================================
+      const fetchMessageCategories =
+      async () => {
+
+        const { data } =
+          await supabase
+            .from("message_categories")
+            .select(`
+              *,
+              class:class_id(
+                name
+              )
+            `)
+            .order(
+              "created_at",
+              {
+                ascending: false,
+              }
+            );
+
+        if (data) {
+
+          setMessageCategories(
+            data
+          );
+
+        }
+
+    };
+
+  // =========================================
+  // CREATE MESSAGE CATEGORY
+  // =========================================
+  
+    const createMessageCategory =
+      async () => {
+
+        if (
+          !selectedCategoryGroup ||
+          !categoryName
+        ) {
+
+          alert(
+            "Please fill all fields."
+          );
+
+          return;
+
+        }
+
+        const { error } =
+          await supabase
+            .from(
+              "message_categories"
+            )
+            .insert([
+              {
+                class_id:
+                  selectedCategoryGroup,
+
+                name:
+                  categoryName,
+
+                created_by:
+                  profile.id,
+              },
+            ]);
+
+        if (error) {
+
+          alert(
+            error.message
+          );
+
+          return;
+
+        }
+
+        alert(
+          "Category created successfully."
+        );
+
+        setCategoryName("");
+
+        fetchMessageCategories();
+
+    };
+
+  // =========================================
+  // FETCH STUDENTS
+  // =========================================
+
+    const fetchStudents =
+      async () => {
+
+        const { data } =
+          await supabase
+            .from("profiles")
+            .select("*")
+            .eq("role", "STUDENT")
+            .eq("status", "ACTIVE")
+            .order("full_name");
+
+        if (data) {
+
+          setStudents(
+            data
+          );
+
+        }
+    };
+
+    // =========================================
+    // FETCH FACULTY LIST
+    // =========================================
+
+    const fetchFacultyList =
+    async () => {
+
+      const { data } =
+        await supabase
+          .from("profiles")
+          .select("*")
+          .eq("role", "FACULTY")
+          .eq("status", "ACTIVE")
+          .order("full_name");
+
+      if (data) {
+
+        setFacultyList(
+          data
+        );
+
+      }
+  };
+
+    // =========================================
+    // FETCH GrOUPS
+    // =========================================
+    const fetchGroups =
+    async () => {
+
+      const { data } =
+        await supabase
+          .from("classes")
+          .select(`
+            *,
+            coordinator:faculty_coordinator_id(
+              full_name
+            )
+          `)
+          .order(
+            "created_at",
+            {
+              ascending: false,
+            }
+          );
+
+      if (data) {
+
+        setGroups(
+          data
+        );
+
+      }
+  };
+
+  // =========================================
+  // CREATE GROUP
+  // =========================================
+        const createGroup =
+      async () => {
+
+        if (
+          !groupName ||
+          !selectedCoordinator
+        ) {
+
+          alert(
+            "Please fill all fields"
+          );
+
+          return;
+        }
+
+        const { error } =
+          await supabase
+            .from("classes")
+            .insert([
+              {
+                name: groupName,
+                faculty_coordinator_id:
+                  selectedCoordinator,
+              },
+            ]);
+
+        if (error) {
+
+          alert(
+            error.message
+          );
+
+          return;
+        }
+
+        alert(
+          "Group created successfully"
+        );
+
+        setGroupName("");
+
+        setSelectedCoordinator("");
+
+        fetchGroups();
+      };
 
   // =========================================
   // FETCH INSTITUTES
@@ -474,6 +767,95 @@ const suspendedUsers =
         "INSTITUTE_ADMIN"
       );
     };
+
+    // =========================================
+    // SAVE MEMBERS
+    // =========================================
+
+    const saveMembers =
+      async () => {
+
+        if (
+          !selectedGroupId
+        ) {
+
+          return;
+        }
+
+        const { error: deleteError } =
+          await supabase
+            .from("class_members")
+            .delete()
+            .eq(
+              "class_id",
+              selectedGroupId
+            );
+
+        if (
+          deleteError
+        ) {
+
+          alert(
+            deleteError.message
+          );
+
+          return;
+        }
+
+        if (
+          selectedMembers.length > 0
+        ) {
+
+          const records =
+            selectedMembers.map(
+              (
+                studentId
+              ) => ({
+
+                class_id:
+                  selectedGroupId,
+
+                student_id:
+                  studentId,
+
+              })
+            );
+
+          const { error } =
+            await supabase
+              .from(
+                "class_members"
+              )
+              .insert(
+                records
+              );
+
+          if (
+            error
+          ) {
+
+            alert(
+              error.message
+            );
+
+            return;
+          }
+
+        }
+
+        alert(
+          "Members saved successfully"
+        );
+
+        setShowMembersModal(
+          false
+        );
+
+        setSelectedMembers(
+          []
+        );
+
+      };
 
     // =========================================
     // UPDATE USER STATUS
@@ -1002,6 +1384,268 @@ const suspendedUsers =
             </div>
 
           )}
+
+          {/* GROUPS */}
+
+          {activeModule === "GROUPS" && (
+
+            <div className="rounded-lg border p-6">
+
+              <h2 className="mb-4 text-xl font-bold">
+                Existing Groups
+              </h2>
+
+              <table className="w-full border">
+
+                <thead>
+
+                  <tr className="border-b bg-gray-100">
+
+                    <th className="p-3 text-left">
+                      Group Name
+                    </th>
+
+                    <th className="p-3 text-left">
+                      Coordinator
+                    </th>
+
+                    <th className="p-3 text-left">
+                      Actions
+                    </th>
+
+                  </tr>
+
+                </thead>
+
+                <tbody>
+
+                  {groups.map((group) => (
+
+                    <tr
+                      key={group.id}
+                      className="border-b"
+                    >
+
+                      <td className="p-3">
+                        {group.name}
+                      </td>
+
+                      <td className="p-3">
+                        {group.coordinator?.full_name ||
+                          "Not Assigned"}
+                      </td>
+
+                      <td className="p-3">
+
+                        <button
+                          onClick={() => {
+
+                            setSelectedGroupId(
+                              group.id
+                            );
+
+                            setShowMembersModal(
+                              true
+                            );
+
+                          }}
+                          className="rounded bg-green-600 px-3 py-1 text-white"
+                        >
+
+                          Manage Members
+
+                        </button>
+
+                      </td>
+
+                    </tr>
+
+                  ))}
+
+                </tbody>
+
+              </table>
+{
+showMembersModal && (
+
+<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+
+  <div className="w-full max-w-md rounded bg-white p-6">
+
+    <h2 className="mb-4 text-xl font-bold">
+      Manage Members
+    </h2>
+
+    <div className="max-h-80 overflow-y-auto">
+
+      {students.map((student) => (
+
+        <label
+          key={student.id}
+          className="mb-2 flex items-center gap-2"
+        >
+
+          <input
+            type="checkbox"
+            checked={
+              selectedMembers.includes(
+                student.id
+              )
+            }
+            onChange={(e) => {
+
+              if (
+                e.target.checked
+              ) {
+
+                setSelectedMembers(
+                  [
+                    ...selectedMembers,
+                    student.id,
+                  ]
+                );
+
+              } else {
+
+                setSelectedMembers(
+                  selectedMembers.filter(
+                    (id) =>
+                      id !==
+                      student.id
+                  )
+                );
+
+              }
+
+            }}
+          />
+
+          {student.full_name}
+
+        </label>
+
+      ))}
+
+    </div>
+
+    <div className="mt-4 flex justify-end gap-2">
+
+      <button
+        onClick={() => {
+
+          setShowMembersModal(
+            false
+          );
+
+          setSelectedMembers(
+            []
+          );
+
+        }}
+        className="rounded bg-gray-500 px-4 py-2 text-white"
+      >
+
+        Cancel
+
+      </button>
+
+      <button
+        onClick={saveMembers}
+        className="rounded bg-blue-600 px-4 py-2 text-white"
+      >
+
+        Save Members
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+)}
+
+            </div>
+
+
+            )}
+
+            {/* MESSAGE CATEGORIES */ }
+            
+            {activeModule === "MESSAGE_CATEGORIES" && (
+
+                <div className="space-y-6">
+
+                  {/* Create Category */}
+
+                  <div className="rounded-lg border p-6">
+
+                    <h2 className="mb-4 text-xl font-bold">
+
+                      Create Communication Category
+
+                    </h2>
+
+                    <select
+                      value={selectedCategoryGroup}
+                      onChange={(e)=>
+                        setSelectedCategoryGroup(
+                          e.target.value
+                        )
+                      }
+                      className="mb-3 w-full rounded border p-3"
+                    >
+
+                      <option value="">
+
+                        Select Group
+
+                      </option>
+
+                      {groups.map((group)=>(
+
+                        <option
+                          key={group.id}
+                          value={group.id}
+                        >
+
+                          {group.name}
+
+                        </option>
+
+                      ))}
+
+                    </select>
+
+                    <input
+                      type="text"
+                      placeholder="Category Name"
+                      value={categoryName}
+                      onChange={(e)=>
+                        setCategoryName(
+                          e.target.value
+                        )
+                      }
+                      className="mb-3 w-full rounded border p-3"
+                    />
+
+                    <button
+                      onClick={
+                        createMessageCategory
+                      }
+                      className="rounded bg-blue-600 px-4 py-2 text-white"
+                    >
+
+                      Create Category
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+                )}
 
           {/* USERS */}
 
