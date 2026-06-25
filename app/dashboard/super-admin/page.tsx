@@ -203,9 +203,7 @@ const menuItems = [
     setSelectedCoordinator] =
     useState("");
 
-  const [facultyList,
-    setFacultyList] =
-    useState<any[]>([]);
+  const [coordinatorList, setCoordinatorList] = useState<any[]>([]);
 
   const [groups,
     setGroups] =
@@ -225,9 +223,7 @@ const menuItems = [
   // =========================================
   // GROUP MEMBERS
   // =========================================
-  const [students,
-  setStudents] =
-  useState<any[]>([]);
+  const [members, setMembers] = useState<any[]>([]);
 
   const [selectedMembers,
     setSelectedMembers] =
@@ -303,11 +299,11 @@ const totalUsers =
 
       fetchDepartments();
 
-      fetchFacultyList();
+      fetchCoordinatorList();
 
       fetchGroups();
 
-      fetchStudents();
+      fetchMembers();
 
       fetchMessageCategories();
 
@@ -409,10 +405,10 @@ const totalUsers =
     };
 
   // =========================================
-  // FETCH STUDENTS
+  // FETCH members
   // =========================================
 
-    const fetchStudents =
+    const fetchMembers =
       async () => {
 
         const { data } =
@@ -425,7 +421,7 @@ const totalUsers =
 
         if (data) {
 
-          setStudents(
+          setMembers(
             data
           );
 
@@ -433,10 +429,10 @@ const totalUsers =
     };
 
     // =========================================
-    // FETCH FACULTY LIST
+    // FETCH COORDINATOR LIST
     // =========================================
 
-    const fetchFacultyList =
+    const fetchCoordinatorList =
     async () => {
 
       const { data } =
@@ -449,7 +445,7 @@ const totalUsers =
 
       if (data) {
 
-        setFacultyList(
+        setCoordinatorList(
           data
         );
 
@@ -809,14 +805,14 @@ const suspendedUsers =
           const records =
             selectedMembers.map(
               (
-                studentId
+                memberId
               ) => ({
 
                 class_id:
                   selectedGroupId,
 
                 student_id:
-                  studentId,
+                  memberId,
 
               })
             );
@@ -942,7 +938,7 @@ const suspendedUsers =
         setNewUserPassword("");
         setNewUserMobile("");
         setNewUserRole(
-          "STUDENT"
+          "MEMBER"
         );
 
         fetchUsers();
@@ -1365,11 +1361,11 @@ const suspendedUsers =
                 </option>
 
                 <option value="FACULTY">
-                  FACULTY
+                  COORDINATORS
                 </option>
 
                 <option value="STUDENT">
-                  STUDENT
+                  MEMBER
                 </option>
 
               </select>
@@ -1478,10 +1474,10 @@ showMembersModal && (
 
     <div className="max-h-80 overflow-y-auto">
 
-      {students.map((student) => (
+      {members.map((member) => (
 
         <label
-          key={student.id}
+          key={member.id}
           className="mb-2 flex items-center gap-2"
         >
 
@@ -1489,7 +1485,7 @@ showMembersModal && (
             type="checkbox"
             checked={
               selectedMembers.includes(
-                student.id
+                member.id
               )
             }
             onChange={(e) => {
@@ -1501,7 +1497,7 @@ showMembersModal && (
                 setSelectedMembers(
                   [
                     ...selectedMembers,
-                    student.id,
+                    member.id,
                   ]
                 );
 
@@ -1511,7 +1507,7 @@ showMembersModal && (
                   selectedMembers.filter(
                     (id) =>
                       id !==
-                      student.id
+                      member.id
                   )
                 );
 
@@ -1520,7 +1516,7 @@ showMembersModal && (
             }}
           />
 
-          {student.full_name}
+          {member.full_name}
 
         </label>
 
@@ -1572,7 +1568,7 @@ showMembersModal && (
             )}
 
             {/* MESSAGE CATEGORIES */ }
-            
+
             {activeModule === "MESSAGE_CATEGORIES" && (
 
                 <div className="space-y-6">
@@ -1682,7 +1678,7 @@ showMembersModal && (
 
               <div className="rounded border bg-green-50 p-4">
                 <h3 className="text-sm font-semibold text-gray-600">
-                  Faculty
+                  Coordinators
                 </h3>
                 <p className="text-3xl font-bold text-green-700">
                   {totalFaculty}
@@ -1691,7 +1687,7 @@ showMembersModal && (
 
               <div className="rounded border bg-purple-50 p-4">
                 <h3 className="text-sm font-semibold text-gray-600">
-                  Students
+                  Members
                 </h3>
                 <p className="text-3xl font-bold text-purple-700">
                   {totalStudents}
