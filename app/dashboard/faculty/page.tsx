@@ -105,16 +105,14 @@ FacultyDashboard() {
     analyticsModalTitle,
     setAnalyticsModalTitle,
   ] = useState("");
+
+
   // =========================================
   // DATA STATES
   // =========================================
 
   const [classes,
     setClasses] =
-    useState<any[]>([]);
-
-  const [categories,
-    setCategories] =
     useState<any[]>([]);
 
   const [sentMessages,
@@ -209,6 +207,13 @@ FacultyDashboard() {
     setSelectedAnalyticsView,
   ] = useState<any>({});
 
+// =========================================
+
+const [messageCategories,
+  setMessageCategories] = useState<any[]>([]);
+
+const [analyticsCategories,
+  setAnalyticsCategories] = useState<any[]>([]);
   // =========================================
 // ANALYTICS FILTERS
 // =========================================
@@ -1540,6 +1545,26 @@ const fetchTasks = async (
       );
     };
 
+    // =========================================
+    // FETCH ANALYTICS CATEGORIES
+    // =========================================
+          const fetchAnalyticsCategories = async () => {
+
+          const { data } = await supabase
+
+              .from("message_categories")
+
+              .select("*")
+
+              .order("name");
+
+          if (data) {
+
+              setAnalyticsCategories(data || []);
+
+          }
+
+      };
 
     // =========================================
     // FETCH ANALYTICS
@@ -1855,8 +1880,7 @@ const fetchTasks = async (
               name:
                 categoryName,
 
-              department_id:
-                profile.department_id,
+              class_id: selectedClass,
 
               created_by:
                 profile.id,
@@ -1924,10 +1948,9 @@ const fetchTasks = async (
 
         }
 
-        setCategories(
+        setMessageCategories(
           data || []
         );
-
     };
 
 // =========================================
@@ -2597,11 +2620,11 @@ console.log("Row Class:", row.class_name);
           {/* ANALYTICS */}
 
           <button
-            onClick={() =>
-              setActiveModule(
-                "ANALYTICS"
-              )
-            }
+            onClick={() => {
+
+                setActiveModule("ANALYTICS");
+                fetchAnalyticsCategories();
+              }}
             className={`rounded px-4 py-3 text-left transition ${
               activeModule ===
               "ANALYTICS"
@@ -3164,7 +3187,7 @@ console.log("Row Class:", row.class_name);
                 </h3>
 
                 {
-                  categories.length === 0 ? (
+                  messageCategories.length === 0 ? (
 
                     <div className="rounded-xl border border-dashed p-10 text-center text-gray-500">
 
@@ -3177,7 +3200,7 @@ console.log("Row Class:", row.class_name);
                     <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
 
                       {
-                        categories.map(
+                        messageCategories.map(
                           (cat) => (
 
                           <div
@@ -3326,7 +3349,7 @@ console.log("Row Class:", row.class_name);
                   </option>
 
                   {
-                    categories.map(
+                    messageCategories.map(
                       (cat) => (
 
                       <option
@@ -3543,7 +3566,7 @@ console.log("Row Class:", row.class_name);
                   </option>
 
                   {
-                    categories.map(
+                    analyticsCategories.map(
                       (cat) => (
 
                       <option
@@ -3716,13 +3739,12 @@ console.log("Row Class:", row.class_name);
 
     <p className="mt-1 text-lg font-semibold text-gray-800">
 
-      {
-        categories.find(
-          (cat) =>
-            cat.id ===
-            msg.category_id
-        )?.name
-      }
+    {
+      analyticsCategories.find(
+        (cat) =>
+          cat.id === msg.category_id
+      )?.name
+    }
 
     </p>
 
