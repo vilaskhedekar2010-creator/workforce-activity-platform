@@ -17,6 +17,9 @@ import DepartmentManagement from "@/components/super-admin/departments/Departmen
 import RoleManagement from "@/components/super-admin/roles/RoleManagement";
 import GroupManagement from "@/components/super-admin/groups/GroupManagement";
 import CommunicationCategoryManagement from "@/components/super-admin/communication/CommunicationCategoryManagement";
+import UserManagement from "@/components/super-admin/users/UserManagement";
+import AddUserModal from "@/components/super-admin/users/AddUserModal";
+import ResetPasswordModal from "@/components/super-admin/users/ResetPasswordModal";
 
 
 export default function SuperAdminPage() {
@@ -1189,6 +1192,84 @@ const communicationManagement = {
 
 };
 
+const addUser = {
+
+  showAddUserModal,
+
+  newUserName,
+  newUserEmail,
+  newUserMobile,
+  newUserPassword,
+  newUserRole,
+
+  enrollmentNumber,
+  facultyId,
+
+  setShowAddUserModal,
+
+  setNewUserName,
+  setNewUserEmail,
+  setNewUserMobile,
+  setNewUserPassword,
+  setNewUserRole,
+
+  setEnrollmentNumber,
+  setFacultyId,
+
+  handleCreateUser,
+
+};
+
+const resetPasswordModal = {
+
+  showResetPasswordModal,
+
+  resetPassword,
+  confirmResetPassword,
+
+  setShowResetPasswordModal,
+
+  setResetPassword,
+  setConfirmResetPassword,
+
+  setSelectedUserId,
+
+  handleResetPassword,
+
+};
+
+const userManagement = {
+
+  totalUsers,
+  totalFaculty,
+  totalStudents,
+  activeUsers,
+  inactiveUsers,
+  suspendedUsers,
+
+  searchTerm,
+  setSearchTerm,
+
+  roleFilter,
+  setRoleFilter,
+
+  statusFilter,
+  setStatusFilter,
+
+  filteredUsers,
+
+  updateUserStatus,
+
+  setSelectedUserId,
+  setShowResetPasswordModal,
+  setShowAddUserModal,
+
+  addUser,
+  resetPasswordModal,
+
+};
+
+
 // =========================================
   // UI
   // =========================================
@@ -1305,321 +1386,13 @@ const communicationManagement = {
     />
   )}
 
-          {/* USERS */}
-
-          {activeModule === "USERS" && (
-
-          <div className="rounded-2xl bg-white p-8 shadow-lg">
-
-            <h2 className="mb-6 text-3xl font-bold">
-
-              User Management
-
-            </h2>
-              <button
-                onClick={() =>
-                  setShowAddUserModal(
-                    true
-                  )
-                }
-                className="rounded bg-blue-600 px-4 py-2 text-white"
-              >
-                + Add User
-              </button>
-
-            <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-6">
-
-              <div className="rounded border bg-blue-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-600">
-                  Total Users
-                </h3>
-                <p className="text-3xl font-bold text-blue-700">
-                  {totalUsers}
-                </p>
-              </div>
-
-              <div className="rounded border bg-green-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-600">
-                  Coordinators
-                </h3>
-                <p className="text-3xl font-bold text-green-700">
-                  {totalFaculty}
-                </p>
-              </div>
-
-              <div className="rounded border bg-purple-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-600">
-                  Members
-                </h3>
-                <p className="text-3xl font-bold text-purple-700">
-                  {totalStudents}
-                </p>
-              </div>
-
-              <div className="rounded border bg-emerald-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-600">
-                  Active
-                </h3>
-                <p className="text-3xl font-bold text-emerald-700">
-                  {activeUsers}
-                </p>
-              </div>
-
-              <div className="rounded border bg-yellow-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-600">
-                  Inactive
-                </h3>
-                <p className="text-3xl font-bold text-yellow-700">
-                  {inactiveUsers}
-                </p>
-              </div>
-
-              <div className="rounded border bg-red-50 p-4">
-                <h3 className="text-sm font-semibold text-gray-600">
-                  Suspended
-                </h3>
-                <p className="text-3xl font-bold text-red-700">
-                  {suspendedUsers}
-                </p>
-              </div>
-
-            </div>
-
-            <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-
-              <input
-                type="text"
-                placeholder="Search by name or email..."
-                value={searchTerm}
-                onChange={(e) =>
-                  setSearchTerm(
-                    e.target.value
-                  )
-                }
-                className="rounded border p-3"
-              />
-
-              <select
-                value={roleFilter}
-                onChange={(e) =>
-                  setRoleFilter(
-                    e.target.value
-                  )
-                }
-                className="rounded border p-3"
-              >
-                <option value="ALL">
-                  All Roles
-                </option>
-
-                <option value="SUPER_ADMIN">
-                  SUPER_ADMIN
-                </option>
-
-                <option value="FACULTY">
-                  FACULTY
-                </option>
-
-                <option value="STUDENT">
-                  STUDENT
-                </option>
-
-              </select>
-
-              <select
-                value={statusFilter}
-                onChange={(e) =>
-                  setStatusFilter(
-                    e.target.value
-                  )
-                }
-                className="rounded border p-3"
-              >
-                <option value="ALL">
-                  All Status
-                </option>
-
-                <option value="ACTIVE">
-                  ACTIVE
-                </option>
-
-                <option value="INACTIVE">
-                  INACTIVE
-                </option>
-
-                <option value="SUSPENDED">
-                  SUSPENDED
-                </option>
-
-              </select>
-
-            </div>
-
-            <div className="overflow-x-auto rounded border">
-
-              <table className="w-full">
-
-                <thead className="bg-gray-100">
-
-                  <tr>
-
-                    <th className="p-3 text-left">
-                      Name
-                    </th>
-
-                    <th className="p-3 text-left">
-                      Email
-                    </th>
-
-                    <th className="p-3 text-left">
-                      Role
-                    </th>
-
-                    <th className="p-3 text-left">
-                      Status
-                    </th>
-
-                    <th className="p-3 text-left">
-                      Actions
-                    </th>
-
-                  </tr>
-
-                </thead>
-
-                <tbody>
-
-                  {filteredUsers.map(
-                    (user) => (
-
-                      <tr
-                        key={user.id}
-                        className="border-t"
-                      >
-
-                        <td className="p-3">
-
-                          {
-                            user.full_name ||
-                            "--"
-                          }
-
-                        </td>
-
-                        <td className="p-3">
-
-                          {user.email}
-
-                        </td>
-
-                        <td className="p-3">
-
-                          {
-                            user.role ||
-                            "--"
-                          }
-
-                        </td>
-
-                        <td className="p-3">
-
-                          {
-                            user.status ||
-                            "ACTIVE"
-                          }
-
-                        </td>
-
-                        <td className="p-3">
-
-                          {
-                            user.role === "SUPER_ADMIN"
-
-                              ? (
-
-                                <span className="font-bold text-red-600">
-                                  Protected
-                                </span>
-
-                              )
-
-                              : (
-
-                                <div className="flex gap-2">
-
-                                  <button
-                                    onClick={() =>
-                                      updateUserStatus(
-                                        user.id,
-                                        "ACTIVE"
-                                      )
-                                    }
-                                    className="rounded bg-green-600 px-3 py-1 text-white"
-                                  >
-                                    Activate
-                                  </button>
-
-                                  <button
-                                    onClick={() =>
-                                      updateUserStatus(
-                                        user.id,
-                                        "INACTIVE"
-                                      )
-                                    }
-                                    className="rounded bg-yellow-600 px-3 py-1 text-white"
-                                  >
-                                    Deactivate
-                                  </button>
-
-                                  <button
-                                    onClick={() =>
-                                      updateUserStatus(
-                                        user.id,
-                                        "SUSPENDED"
-                                      )
-                                    }
-                                    className="rounded bg-red-600 px-3 py-1 text-white"
-                                  >
-                                    Suspend
-                                  </button>
-                                  <button
-                                    onClick={() => {
-
-                                      setSelectedUserId(
-                                        user.id
-                                      );
-
-                                      setShowResetPasswordModal(
-                                        true
-                                      );
-
-                                    }}
-                                    className="rounded bg-blue-600 px-3 py-1 text-white"
-                                  >
-                                    Reset Password
-                                  </button>
-
-                                </div>
-
-                              )
-                          }
-
-                        </td>
-
-                      </tr>
-
-                    )
-                  )}
-
-                </tbody>
-
-              </table>
-
-            </div>
-
-          </div>
-
-          )}
+{/* USERS */}
+
+{activeModule === "USERS" && (
+  <UserManagement
+    userManagement={userManagement}
+  />
+)}
 
           {/* REPORTS */}
 
@@ -1640,237 +1413,6 @@ const communicationManagement = {
           )}
 
         </div>
-
-        {/* ADD USER MODAL */}
-
-        {
-          showAddUserModal && (
-
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-
-              <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-lg">
-
-                <h2 className="mb-5 text-2xl font-bold">
-
-                  Add User
-
-                </h2>
-
-                <input
-                  type="text"
-                  placeholder="Full Name"
-                  value={newUserName}
-                  onChange={(e) =>
-                    setNewUserName(
-                      e.target.value
-                    )
-                  }
-                  className="mb-3 w-full rounded border p-3"
-                />
-
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={newUserEmail}
-                  onChange={(e) =>
-                    setNewUserEmail(
-                      e.target.value
-                    )
-                  }
-                  className="mb-3 w-full rounded border p-3"
-                />
-
-                <input
-                  type="text"
-                  placeholder="Mobile Number"
-                  value={newUserMobile}
-                  onChange={(e) =>
-                    setNewUserMobile(
-                      e.target.value
-                    )
-                  }
-                  className="mb-3 w-full rounded border p-3"
-                />
-
-
-
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={newUserPassword}
-                  onChange={(e) =>
-                    setNewUserPassword(
-                      e.target.value
-                    )
-                  }
-                  className="mb-3 w-full rounded border p-3"
-                />
-
-                <select
-                  value={newUserRole}
-                  onChange={(e) =>
-                    setNewUserRole(
-                      e.target.value
-                    )
-                  }
-                  className="mb-4 w-full rounded border p-3"
-                >
-
-                  <option value="STUDENT">
-                    STUDENT
-                  </option>
-
-                  <option value="FACULTY">
-                    FACULTY
-                  </option>
-
-                </select>
-
-                {
-                  newUserRole ===
-                  "STUDENT" && (
-
-                  <input
-                    type="text"
-                    placeholder="Enrollment Number"
-                    value={enrollmentNumber}
-                    onChange={(e) =>
-                      setEnrollmentNumber(
-                        e.target.value
-                      )
-                    }
-                    className="mb-3 w-full rounded border p-3"
-                  />
-                )}
-
-                {
-                  newUserRole ===
-                  "FACULTY" && (
-
-                  <input
-                    type="text"
-                    placeholder="Faculty ID"
-                    value={facultyId}
-                    onChange={(e) =>
-                      setFacultyId(
-                        e.target.value
-                      )
-                    }
-                    className="mb-3 w-full rounded border p-3"
-                  />
-                )}
-
-                <div className="flex justify-end gap-3">
-
-                  <button
-                    onClick={() =>
-                      setShowAddUserModal(
-                        false
-                      )
-                    }
-                    className="rounded bg-gray-500 px-4 py-2 text-white"
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    onClick={
-                      handleCreateUser
-                    }
-                    className="rounded bg-green-600 px-4 py-2 text-white"
-                  >
-                    Create User
-                  </button>
-
-                </div>
-
-              </div>
-
-            </div>
-          )
-        }
-        {/* =========================================
-            RESET PASSWORD MODAL
-        ========================================= */}
-
-        {
-          showResetPasswordModal && (
-
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-
-              <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
-
-                <h2 className="mb-5 text-2xl font-bold">
-
-                  Reset Password
-
-                </h2>
-
-                <input
-                  type="password"
-                  placeholder="New Password"
-                  value={resetPassword}
-                  onChange={(e) =>
-                    setResetPassword(
-                      e.target.value
-                    )
-                  }
-                  className="mb-4 w-full rounded border p-3"
-                />
-
-                <input
-                  type="password"
-                  placeholder="Confirm Password"
-                  value={confirmResetPassword}
-                  onChange={(e) =>
-                    setConfirmResetPassword(
-                      e.target.value
-                    )
-                  }
-                  className="mb-4 w-full rounded border p-3"
-                />
-
-                <div className="flex justify-end gap-3">
-
-                  <button
-                    onClick={() => {
-
-                      setShowResetPasswordModal(
-                        false
-                      );
-
-                      setResetPassword("");
-
-                      setConfirmResetPassword("");
-
-                      setSelectedUserId("");
-
-                    }}
-                    className="rounded bg-gray-500 px-4 py-2 text-white"
-                  >
-
-                    Cancel
-
-                  </button>
-
-                  <button
-                    onClick={
-                      handleResetPassword
-                    }
-                    className="rounded bg-blue-600 px-4 py-2 text-white"
-                  >
-
-                    Reset Password
-
-                  </button>
-
-                </div>
-
-              </div>
-
-            </div>
-          )
-        }
 
       </div>
       );
