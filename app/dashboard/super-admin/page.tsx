@@ -21,6 +21,7 @@ import UserManagement from "@/components/super-admin/users/UserManagement";
 import AddUserModal from "@/components/super-admin/users/AddUserModal";
 import ResetPasswordModal from "@/components/super-admin/users/ResetPasswordModal";
 import Reports from "@/components/super-admin/reports/Reports";
+import Dashboard from "@/components/super-admin/dashboard/Dashboard";
 
 
 
@@ -1162,8 +1163,17 @@ const groupManagement = {
 
   groups,
 
-  setSelectedGroupId,
+  groupName,
+  setGroupName,
 
+  selectedCoordinator,
+  setSelectedCoordinator,
+
+  coordinatorList,
+
+  createGroup,
+
+  setSelectedGroupId,
   setShowMembersModal,
 
   showMembersModal,
@@ -1171,7 +1181,6 @@ const groupManagement = {
   members,
 
   selectedMembers,
-
   setSelectedMembers,
 
   saveMembers,
@@ -1271,6 +1280,15 @@ const userManagement = {
 
 };
 
+const dashboard = {
+
+  totalInstitutes,
+
+  totalDepartments,
+
+  totalUsers,
+
+};
 
 // =========================================
   // UI
@@ -1302,48 +1320,15 @@ const userManagement = {
 
           {/* HOME */}
 
-          {activeModule === "HOME" && (
+{activeModule === "HOME" && (
 
-            <div>
+  <Dashboard
+    totalInstitutes={dashboard.totalInstitutes}
+    totalDepartments={dashboard.totalDepartments}
+    totalUsers={dashboard.totalUsers}
+  />
 
-              <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-
-                <StatCard
-                  title="Institutes"
-                  value={totalInstitutes}
-                  color="text-blue-700"
-                />
-
-                <StatCard
-                  title="Departments"
-                  value={totalDepartments}
-                  color="text-green-700"
-                />
-
-                <StatCard
-                  title="Users"
-                  value={totalUsers}
-                  color="text-purple-700"
-                />
-
-              </div>
-
-              <div className="rounded-2xl bg-white p-8 shadow-lg">
-
-                <h2 className="text-3xl font-bold">
-                  Welcome
-                </h2>
-
-                <p className="mt-3 text-gray-600">
-                  Super Admin Management &
-                  Communication Platform
-                </p>
-
-              </div>
-
-            </div>
-
-          )}
+)}
 
 {/* INSTITUTES */}
 
