@@ -20,6 +20,8 @@ import CommunicationCategoryManagement from "@/components/super-admin/communicat
 import UserManagement from "@/components/super-admin/users/UserManagement";
 import AddUserModal from "@/components/super-admin/users/AddUserModal";
 import ResetPasswordModal from "@/components/super-admin/users/ResetPasswordModal";
+import Reports from "@/components/super-admin/reports/Reports";
+
 
 
 export default function SuperAdminPage() {
@@ -1394,23 +1396,10 @@ const userManagement = {
   />
 )}
 
-          {/* REPORTS */}
-
-          {activeModule === "REPORTS" && (
-
-            <div className="rounded-2xl bg-white p-8 shadow-lg">
-
-              <h2 className="mb-4 text-3xl font-bold">
-                Reports
-              </h2>
-
-              <p>
-                Coming Soon
-              </p>
-
-            </div>
-
-          )}
+{/* REPORTS */}
+  {activeModule === "REPORTS" && (
+    <Reports />
+  )}
 
         </div>
 
