@@ -13,70 +13,51 @@ export default function DashboardHeader({
   email,
   onLogout,
 }: DashboardHeaderProps) {
-
   return (
+    <header className="mb-8 rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div className="flex flex-col gap-6 p-6 lg:flex-row lg:items-center lg:justify-between">
+        {/* Left Section */}
+        <div className="flex items-center gap-5">
+          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-slate-100">
+            <img
+              src="/logo.png"
+              alt="WAMP Logo"
+              className="h-12 w-12 object-contain"
+            />
+          </div>
 
-    <div className="mb-8 flex flex-col gap-4 rounded border bg-white p-5 shadow md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+              {title}
+            </h1>
 
-      {/* LEFT */}
-
-      <div className="flex items-center gap-4">
-
-        <img
-          src="/logo.png"
-          alt="University Logo"
-          className="h-16 w-16 object-contain"
-        />
-
-        <div>
-
-          <h1 className="text-3xl font-bold text-gray-800">
-
-            {title}
-
-          </h1>
-
-          <p className="text-sm text-gray-500">
-
-            {subtitle}
-
-          </p>
-
+            <p className="mt-1 text-sm text-slate-500">
+              {subtitle}
+            </p>
+          </div>
         </div>
 
-      </div>
+        {/* Right Section */}
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-base font-semibold text-slate-900">
+              {fullName}
+            </p>
 
-      {/* RIGHT */}
+            <p className="text-sm text-slate-500">
+              {email}
+            </p>
+          </div>
 
-      <div className="flex items-center gap-3">
-
-        <div className="text-right">
-
-          <p className="font-semibold text-gray-800">
-
-            {fullName}
-
-          </p>
-
-          <p className="text-sm text-gray-500">
-
-            {email}
-
-          </p>
-
+          <button
+            type="button"
+            onClick={onLogout}
+            className="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-medium text-white transition-colors duration-200 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Logout
+          </button>
         </div>
-
-        <button
-          onClick={onLogout}
-          className="rounded bg-black px-4 py-2 text-white hover:bg-gray-800"
-        >
-
-          Logout
-
-        </button>
-
       </div>
-
-    </div>
+    </header>
   );
 }
