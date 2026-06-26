@@ -15,6 +15,9 @@ from "@/components/shared/StatCard";
 import InstituteManagement from "@/components/super-admin/institutes/InstituteManagement";
 import DepartmentManagement from "@/components/super-admin/departments/DepartmentManagement";
 import RoleManagement from "@/components/super-admin/roles/RoleManagement";
+import GroupManagement from "@/components/super-admin/groups/GroupManagement";
+import CommunicationCategoryManagement from "@/components/super-admin/communication/CommunicationCategoryManagement";
+
 
 export default function SuperAdminPage() {
 
@@ -1149,7 +1152,44 @@ const roleManagement = {
   handleAssignRole,
 
 };
-  // =========================================
+
+const groupManagement = {
+
+  groups,
+
+  setSelectedGroupId,
+
+  setShowMembersModal,
+
+  showMembersModal,
+
+  members,
+
+  selectedMembers,
+
+  setSelectedMembers,
+
+  saveMembers,
+
+};
+
+const communicationManagement = {
+
+  selectedCategoryGroup,
+
+  categoryName,
+
+  groups,
+
+  setSelectedCategoryGroup,
+
+  setCategoryName,
+
+  createMessageCategory,
+
+};
+
+// =========================================
   // UI
   // =========================================
 
@@ -1247,267 +1287,23 @@ const roleManagement = {
   />
 )}
 
-          {/* GROUPS */}
+{/* GROUPS */}
 
-          {activeModule === "GROUPS" && (
+  {activeModule === "GROUPS" && (
 
-            <div className="rounded-lg border p-6">
+    <GroupManagement
+      groupManagement={groupManagement}
+    />
 
-              <h2 className="mb-4 text-xl font-bold">
-                Existing Groups
-              </h2>
+  )}
 
-              <table className="w-full border">
+{/* MESSAGE CATEGORIES */ }
+  {activeModule === "MESSAGE_CATEGORIES" && (
 
-                <thead>
-
-                  <tr className="border-b bg-gray-100">
-
-                    <th className="p-3 text-left">
-                      Group Name
-                    </th>
-
-                    <th className="p-3 text-left">
-                      Coordinator
-                    </th>
-
-                    <th className="p-3 text-left">
-                      Actions
-                    </th>
-
-                  </tr>
-
-                </thead>
-
-                <tbody>
-
-                  {groups.map((group) => (
-
-                    <tr
-                      key={group.id}
-                      className="border-b"
-                    >
-
-                      <td className="p-3">
-                        {group.name}
-                      </td>
-
-                      <td className="p-3">
-                        {group.coordinator?.full_name ||
-                          "Not Assigned"}
-                      </td>
-
-                      <td className="p-3">
-
-                        <button
-                          onClick={() => {
-
-                            setSelectedGroupId(
-                              group.id
-                            );
-
-                            setShowMembersModal(
-                              true
-                            );
-
-                          }}
-                          className="rounded bg-green-600 px-3 py-1 text-white"
-                        >
-
-                          Manage Members
-
-                        </button>
-
-                      </td>
-
-                    </tr>
-
-                  ))}
-
-                </tbody>
-
-              </table>
-{
-showMembersModal && (
-
-<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-
-  <div className="w-full max-w-md rounded bg-white p-6">
-
-    <h2 className="mb-4 text-xl font-bold">
-      Manage Members
-    </h2>
-
-    <div className="max-h-80 overflow-y-auto">
-
-      {members.map((member) => (
-
-        <label
-          key={member.id}
-          className="mb-2 flex items-center gap-2"
-        >
-
-          <input
-            type="checkbox"
-            checked={
-              selectedMembers.includes(
-                member.id
-              )
-            }
-            onChange={(e) => {
-
-              if (
-                e.target.checked
-              ) {
-
-                setSelectedMembers(
-                  [
-                    ...selectedMembers,
-                    member.id,
-                  ]
-                );
-
-              } else {
-
-                setSelectedMembers(
-                  selectedMembers.filter(
-                    (id) =>
-                      id !==
-                      member.id
-                  )
-                );
-
-              }
-
-            }}
-          />
-
-          {member.full_name}
-
-        </label>
-
-      ))}
-
-    </div>
-
-    <div className="mt-4 flex justify-end gap-2">
-
-      <button
-        onClick={() => {
-
-          setShowMembersModal(
-            false
-          );
-
-          setSelectedMembers(
-            []
-          );
-
-        }}
-        className="rounded bg-gray-500 px-4 py-2 text-white"
-      >
-
-        Cancel
-
-      </button>
-
-      <button
-        onClick={saveMembers}
-        className="rounded bg-blue-600 px-4 py-2 text-white"
-      >
-
-        Save Members
-
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-)}
-
-            </div>
-
-
-            )}
-
-            {/* MESSAGE CATEGORIES */ }
-
-            {activeModule === "MESSAGE_CATEGORIES" && (
-
-                <div className="space-y-6">
-
-                  {/* Create Category */}
-
-                  <div className="rounded-lg border p-6">
-
-                    <h2 className="mb-4 text-xl font-bold">
-
-                      Create Communication Category
-
-                    </h2>
-
-                    <select
-                      value={selectedCategoryGroup}
-                      onChange={(e)=>
-                        setSelectedCategoryGroup(
-                          e.target.value
-                        )
-                      }
-                      className="mb-3 w-full rounded border p-3"
-                    >
-
-                      <option value="">
-
-                        Select Group
-
-                      </option>
-
-                      {groups.map((group)=>(
-
-                        <option
-                          key={group.id}
-                          value={group.id}
-                        >
-
-                          {group.name}
-
-                        </option>
-
-                      ))}
-
-                    </select>
-
-                    <input
-                      type="text"
-                      placeholder="Category Name"
-                      value={categoryName}
-                      onChange={(e)=>
-                        setCategoryName(
-                          e.target.value
-                        )
-                      }
-                      className="mb-3 w-full rounded border p-3"
-                    />
-
-                    <button
-                      onClick={
-                        createMessageCategory
-                      }
-                      className="rounded bg-blue-600 px-4 py-2 text-white"
-                    >
-
-                      Create Category
-
-                    </button>
-
-                  </div>
-
-                </div>
-
-                )}
+    <CommunicationCategoryManagement
+      communicationManagement={communicationManagement}
+    />
+  )}
 
           {/* USERS */}
 
