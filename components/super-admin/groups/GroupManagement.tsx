@@ -5,6 +5,8 @@ import {
   UserCheck,
 } from "lucide-react";
 
+import { useGroupManagement } from "@/hooks/useGroupManagement";
+
 import ManageMembersModal from "./ManageMembersModal";
 
 type GroupManagementData = {
@@ -80,6 +82,18 @@ export default function GroupManagement({
 
   } = groupManagement;
 
+    const {
+
+      searchTerm,
+
+      setSearchTerm,
+
+      filteredGroups,
+
+    } = useGroupManagement(
+      groups
+    );
+
   return (
 
     <div className="space-y-2">
@@ -133,7 +147,7 @@ export default function GroupManagement({
           DASHBOARD CARDS
       ========================================= */}
 
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-3 width=50">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-3">
 
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
 
@@ -291,11 +305,17 @@ export default function GroupManagement({
               className="absolute left-3 top-3 text-slate-400"
             />
 
-            <input
-              type="text"
-              placeholder="Search Groups..."
-              className="w-130 rounded-xl border border-slate-300 py-2 pl-10 pr-4 outline-none focus:border-blue-600"
-            />
+          <input
+            type="text"
+            placeholder="Search Groups..."
+            value={searchTerm}
+            onChange={(e) =>
+              setSearchTerm(
+                e.target.value
+              )
+            }
+            className="w-96 rounded-xl border border-slate-300 py-2 pl-10 pr-4 outline-none transition focus:border-blue-600"
+          />
 
           </div>
 
@@ -345,7 +365,7 @@ export default function GroupManagement({
 
             <tbody>
 
-              {groups.map((group) => (
+              {filteredGroups.map((group) => (
 
                 <tr
                   key={group.id}
@@ -442,7 +462,7 @@ export default function GroupManagement({
 
               ))}
 
-              {groups.length === 0 && (
+              {filteredGroups.length === 0 && (
 
                 <tr>
 
@@ -464,8 +484,9 @@ export default function GroupManagement({
 
                     <p className="mt-2 text-sm text-slate-500">
 
-                      Create your first communication group
-                      using the form above.
+                      {searchTerm
+                        ? `No groups found matching "${searchTerm}".`
+                        : "Create your first communication group using the form above."}
 
                     </p>
 
