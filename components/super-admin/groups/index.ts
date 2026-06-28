@@ -1,1 +1,1 @@
-export { default } from "./GroupManagement";
+export { GroupManagement as default } from "@/modules/groups";
