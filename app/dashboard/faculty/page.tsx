@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase-client";
 import { checkUserStatus } from "@/lib/checkUserStatus";
 import HomeSection from "@/dashboard/faculty/components/HomeSection";
+import GroupsSection from "@/dashboard/faculty/components/GroupsSection";
+import CategorySection from "@/dashboard/faculty/components/CategorySection";
 
 const formatDateTime = (
   value: string | null
@@ -1860,6 +1862,15 @@ const fetchTasks = async (
   const handleCreateCategory =
     async () => {
 
+            if (!selectedClass) {
+
+        alert(
+          "Please select a Group."
+        );
+
+        return;
+      }
+
       if (!categoryName) {
 
         alert(
@@ -1904,7 +1915,9 @@ const fetchTasks = async (
       );
 
       setCategoryName("");
-
+      
+      setSelectedClass("");
+      
       fetchCategories(
         selectedClass
       );
@@ -2820,349 +2833,38 @@ console.log("Row Class:", row.class_name);
         {/* =========================================
         CLASSES MODULE
         ========================================= */}
-
-        {
-          activeModule ===
-          "CLASSES" && (
-
-          <div className="space-y-8">
-
-            {/* CLASS CARDS */}
-
-            <div className="rounded-2xl bg-white p-8 shadow-lg">
-
-              {/* HEADER */}
-
-              <div className="mb-6 flex items-center justify-between">
-
-                <div>
-
-                  <h2 className="text-3xl font-bold text-gray-800">
-
-                    Assigned Classes
-
-                  </h2>
-
-                  <p className="mt-1 text-gray-500">
-
-                    Classes and groups assigned to you
-
-                  </p>
-
-                </div>
-
-              </div>
-
-              {/* EMPTY STATE */}
-
-              {
-                classes.length === 0 ? (
-
-                  <div className="rounded-xl border border-dashed p-10 text-center text-gray-500">
-
-                    No classes assigned yet.
-
-                  </div>
-
-                ) : (
-
-                  <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-
-                    {
-                      classes.map(
-                        (cls) => (
-
-                        <div
-                          key={cls.id}
-
-                          onClick={() =>
-                            fetchClassStudents(
-                              cls.id,
-                              `${cls.name} ${cls.section}`
-                            )
-                          }
-
-                          className="cursor-pointer rounded-2xl border bg-gray-50 p-6 transition hover:border-blue-500 hover:shadow-lg"
-                        >
-
-                          <h3 className="text-2xl font-bold text-blue-700">
-
-                            {cls.name}
-
-                          </h3>
-
-                          <p className="mt-3 text-lg text-gray-700">
-
-                            Section:
-                            {" "}
-
-                            <span className="font-semibold">
-
-                              {cls.section}
-
-                            </span>
-
-                          </p>
-
-                          <p className="mt-4 text-sm font-semibold text-blue-600">
-
-                            Click to View Students →
-
-                          </p>
-
-                        </div>
-
-                      ))
-                    }
-
-                  </div>
-                )
-              }
-
-            </div>
-
-            {/* STUDENT LIST */}
-
-            {
-              selectedClassStudents.length > 0 && (
-
-              <div className="rounded-2xl bg-white p-8 shadow-lg">
-
-                {/* HEADER */}
-
-                <div className="mb-6">
-
-                  <h2 className="text-3xl font-bold text-gray-800">
-
-                    Students
-
-                  </h2>
-
-                  <p className="mt-2 text-gray-500">
-
-                    {
-                      selectedClassName
-                    }
-
-                  </p>
-
-                </div>
-
-
-
-                {/* TABLE */}
-
-                <div className="overflow-x-auto">
-
-                  <table className="min-w-full border border-gray-200">
-
-                    <thead className="bg-gray-100">
-
-                      <tr>
-
-                        <th className="border p-3 text-center font-bold">
-
-                          Enrollment No
-
-                        </th>
-
-                        <th className="border p-3 text-center font-bold">
-
-                          Student Name
-
-                        </th>
-
-                        <th className="border p-3 text-center font-bold">
-
-                          Email
-
-                        </th>
-
-                        <th className="border p-3 text-center font-bold">
-
-                          Mobile
-
-                        </th>
-
-                      </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                      {
-                        selectedClassStudents.map(
-                          (student: any, index) => (
-
-                          <tr
-                            key={index}
-                            className="hover:bg-gray-50"
-                          >
-
-                            <td className="border p-3 text-center">
-
-                              {student.enrollment_number || "--"}
-
-                            </td>
-
-                            <td className="border p-3 text-center">
-
-                              {student.full_name || "--"}
-
-                            </td>
-
-                            <td className="border p-3">
-
-                              {student.email || "--"}
-
-                            </td>
-
-                            <td className="border p-3">
-
-                              {student.mobile || "--"}
-
-                            </td>
-
-                          </tr>
-
-                        ))
-                      }
-
-                    </tbody>
-
-                  </table>
-
-                </div>
-
-              </div>
-            )}
-
-          </div>
-        )}
+{
+  activeModule === "CLASSES" && (
+    <GroupsSection
+      groups={classes}
+      selectedGroupStudents={selectedClassStudents}
+      selectedGroupName={selectedClassName}
+      onOpenGroup={(groupId, groupName) =>
+        fetchClassStudents(groupId, groupName)
+      }
+    />
+  )
+}
         {/* =========================================
         CATEGORY MODULE
         ========================================= */}
 
-        {
-          activeModule ===
-          "CATEGORY" && (
-
-            <div className="rounded-2xl bg-white p-8 shadow-lg">
-
-              {/* HEADER */}
-
-              <div className="mb-8">
-
-                <h2 className="text-3xl font-bold text-gray-800">
-
-                  Message Categories
-
-                </h2>
-
-                <p className="mt-2 text-gray-500">
-
-                  Create and manage communication categories
-
-                </p>
-
-              </div>
-
-              {/* CREATE CATEGORY FORM */}
-
-              <div className="rounded-2xl border bg-gray-50 p-6">
-
-                <h3 className="mb-4 text-2xl font-semibold text-gray-700">
-
-                  Create New Category
-
-                </h3>
-
-                <div className="flex flex-col gap-4 md:flex-row">
-
-                  <input
-                    type="text"
-                    placeholder="Enter category name"
-                    value={categoryName}
-                    onChange={(e) =>
-                      setCategoryName(
-                        e.target.value
-                      )
-                    }
-                    className="flex-1 rounded-xl border p-4 text-lg outline-none transition focus:border-blue-500"
-                  />
-
-                  <button
-                    onClick={
-                      handleCreateCategory
-                    }
-                    className="rounded-xl bg-blue-600 px-8 py-4 text-lg font-semibold text-white transition hover:bg-blue-700"
-                  >
-
-                    Create Category
-
-                  </button>
-
-                </div>
-
-              </div>
-
-              {/* CATEGORY LIST */}
-
-              <div className="mt-10">
-
-                <h3 className="mb-5 text-2xl font-semibold text-gray-700">
-
-                  Existing Categories
-
-                </h3>
-
-                {
-                  messageCategories.length === 0 ? (
-
-                    <div className="rounded-xl border border-dashed p-10 text-center text-gray-500">
-
-                      No categories created yet.
-
-                    </div>
-
-                  ) : (
-
-                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-
-                      {
-                        messageCategories.map(
-                          (cat) => (
-
-                          <div
-                            key={cat.id}
-                            className="rounded-2xl border bg-gradient-to-r from-blue-50 to-white p-6 shadow-sm transition hover:shadow-lg"
-                          >
-
-                            <h4 className="text-2xl font-bold text-blue-700">
-
-                              {cat.name}
-
-                            </h4>
-
-                            <p className="mt-3 text-sm text-gray-500">
-
-                              Communication Category
-
-                            </p>
-
-                          </div>
-
-                        ))
-                      }
-
-                    </div>
-                  )
-                }
-
-              </div>
-
-            </div>
-        )}
+{
+  activeModule === "CATEGORY" && (
+<CategorySection
+  groups={classes}
+  selectedGroup={selectedClass}
+  onGroupChange={(groupId) => {
+    setSelectedClass(groupId);
+    fetchCategories(groupId);
+  }}
+  categoryName={categoryName}
+  setCategoryName={setCategoryName}
+  messageCategories={messageCategories}
+  handleCreateCategory={handleCreateCategory}
+/>
+  )
+}
 
         {/* =========================================
         MESSAGE MODULE
