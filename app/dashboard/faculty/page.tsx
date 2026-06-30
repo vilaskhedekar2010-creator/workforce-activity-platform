@@ -12,6 +12,7 @@ import { checkUserStatus } from "@/lib/checkUserStatus";
 import HomeSection from "@/dashboard/faculty/components/HomeSection";
 import GroupsSection from "@/dashboard/faculty/components/GroupsSection";
 import CategorySection from "@/dashboard/faculty/components/CategorySection";
+import MessageSection from "@/dashboard/faculty/components/MessageSection";
 
 const formatDateTime = (
   value: string | null
@@ -2870,228 +2871,43 @@ console.log("Row Class:", row.class_name);
         MESSAGE MODULE
         ========================================= */}
 
-        {
-          activeModule ===
-          "MESSAGE" && (
+{
+  activeModule === "MESSAGE" && (
 
-          <div className="rounded-2xl bg-white p-8 shadow-lg">
+    <MessageSection
 
-            {/* HEADER */}
+      groups={classes}
+      categories={messageCategories}
 
-            <div className="mb-8">
+      selectedGroup={selectedClass}
+      setSelectedGroup={setSelectedClass}
 
-              <h2 className="text-3xl font-bold text-gray-800">
+      selectedCategory={selectedCategory}
+      setSelectedCategory={setSelectedCategory}
 
-                Send Message
+      title={title}
+      setTitle={setTitle}
 
-              </h2>
+      message={message}
+      setMessage={setMessage}
 
-              <p className="mt-2 text-gray-500">
+      deadline={deadline}
+      setDeadline={setDeadline}
 
-                Send announcements and important communication to students
+      onGroupChange={(groupId) => {
 
-              </p>
+        setSelectedClass(groupId);
 
-            </div>
+        fetchCategories(groupId);
 
-            {/* FORM */}
+      }}
 
-            <div className="space-y-6">
+      handleSendMessage={handleSendMessage}
 
-              {/* CLASS */}
+    />
 
-              <div>
-
-                <label className="mb-2 block text-lg font-semibold text-gray-700">
-
-                  Select Class / Group
-
-                </label>
-
-                <select
-                  value={selectedClass}
-                    onChange={(e) => {
-
-                      setSelectedClass(
-                        e.target.value
-                      );
-
-                      fetchCategories(
-                        e.target.value
-                      );
-
-                    }}
-                  className="w-full rounded-xl border p-4 text-lg outline-none transition focus:border-blue-500"
-                >
-
-                  <option value="">
-
-                    Select Class
-
-                  </option>
-
-                  {
-                    classes.map(
-                      (cls) => (
-
-                      <option
-                        key={cls.id}
-                        value={cls.id}
-                      >
-
-                        {cls.name}
-                        {" "}
-                        {cls.section}
-
-                      </option>
-
-                    ))
-                  }
-
-                </select>
-
-              </div>
-
-              {/* CATEGORY */}
-
-              <div>
-
-                <label className="mb-2 block text-lg font-semibold text-gray-700">
-
-                  Select Category
-
-                </label>
-
-                <select
-                  value={
-                    selectedCategory
-                  }
-                  onChange={(e) =>
-                    setSelectedCategory(
-                      e.target.value
-                    )
-                  }
-                  className="w-full rounded-xl border p-4 text-lg outline-none transition focus:border-blue-500"
-                >
-
-                  <option value="">
-
-                    Select Category
-
-                  </option>
-
-                  {
-                    messageCategories.map(
-                      (cat) => (
-
-                      <option
-                        key={cat.id}
-                        value={cat.id}
-                      >
-
-                        {cat.name}
-
-                      </option>
-
-                    ))
-                  }
-
-                </select>
-
-              </div>
-
-              {/* TITLE */}
-
-              <div>
-
-                <label className="mb-2 block text-lg font-semibold text-gray-700">
-
-                  Message Title
-
-                </label>
-
-                <input
-                  type="text"
-                  placeholder="Enter message title"
-                  value={title}
-                  onChange={(e) =>
-                    setTitle(
-                      e.target.value
-                    )
-                  }
-                  className="w-full rounded-xl border p-4 text-lg outline-none transition focus:border-blue-500"
-                />
-
-              </div>
-
-              {/* MESSAGE */}
-
-              <div>
-
-                <label className="mb-2 block text-lg font-semibold text-gray-700">
-
-                  Message Content
-
-                </label>
-
-                <textarea
-                  placeholder="Write your message here..."
-                  value={message}
-                  onChange={(e) =>
-                    setMessage(
-                      e.target.value
-                    )
-                  }
-                  rows={8}
-                  className="w-full rounded-xl border p-4 text-lg outline-none transition focus:border-blue-500"
-                />
-
-              </div>
-
-              {/* DEADLINE */}
-
-              <div>
-
-                <label className="mb-2 block text-lg font-semibold text-gray-700">
-
-                  Acknowledgement Deadline
-
-                </label>
-
-                <input
-                  type="datetime-local"
-                  value={deadline}
-                  onChange={(e) =>
-                    setDeadline(
-                      e.target.value
-                    )
-                  }
-                  className="w-full rounded-xl border p-4 text-lg outline-none transition focus:border-blue-500"
-                />
-
-              </div>
-
-              {/* BUTTON */}
-
-              <div className="pt-4">
-
-                <button
-                  onClick={
-                    handleSendMessage
-                  }
-                  className="rounded-2xl bg-green-600 px-10 py-4 text-xl font-semibold text-white transition hover:bg-green-700"
-                >
-
-                  Send Message
-
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
-        )}
+  )
+}
 
         {/* =========================================
         ANALYTICS MODULE
