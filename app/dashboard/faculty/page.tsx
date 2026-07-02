@@ -6,6 +6,7 @@ import {
 } from "react";
 
 import { useRouter } from "next/navigation";
+import { formatDateTime } from "@/lib/utils/dateTime";
 
 import { supabase } from "@/lib/supabase-client";
 import { checkUserStatus } from "@/lib/checkUserStatus";
@@ -16,37 +17,13 @@ import MessageSection from "@/dashboard/faculty/components/MessageSection";
 import AnalyticsSection from "@/dashboard/faculty/components/AnalyticsSection";
 import ClassDashboardSection from "@/dashboard/faculty/components/ClassDashboardSection";
 import TasksSection from "@/dashboard/faculty/components/TasksSection";
-
-const formatDateTime = (
-  value: string | null
-) => {
-
-  if (!value) {
-
-    return "--";
-  }
-
-  return new Date(value)
-    .toLocaleString(
-      "en-IN",
-      {
-        timeZone:
-          "Asia/Kolkata",
-
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-
-        hour: "2-digit",
-        minute: "2-digit",
-
-        hour12: true
-      }
-    );
-};
+import EventsSection from "@/dashboard/faculty/components/EventsSection";
+import TaskModal from "@/dashboard/faculty/components/TaskModal";
+import PendingTasksModal from "@/dashboard/faculty/components/PendingTasksModal";
+import ProfileModal from "@/dashboard/faculty/components/ProfileModal";
 
 export default function
-FacultyDashboard() {
+  FacultyDashboard() {
 
   const router =
     useRouter();
@@ -89,8 +66,8 @@ FacultyDashboard() {
   ] = useState("");
 
   const [
-  selectedClassStudents,
-  setSelectedClassStudents,
+    selectedClassStudents,
+    setSelectedClassStudents,
   ] = useState<any[]>([]);
 
   const [
@@ -130,7 +107,7 @@ FacultyDashboard() {
     setAnalytics] =
     useState<any>({});
 
-    //Test
+  //Test
   // =========================================
   // TASK MANAGEMENT
   // =========================================
@@ -180,7 +157,7 @@ FacultyDashboard() {
     setClassStudents,
   ] = useState<any[]>([]);
 
-    const [
+  const [
     taskUpdates,
     setTaskUpdates,
   ] = useState<any>({});
@@ -215,46 +192,46 @@ FacultyDashboard() {
     setSelectedAnalyticsView,
   ] = useState<any>({});
 
-// =========================================
-
-const [messageCategories,
-  setMessageCategories] = useState<any[]>([]);
-
-const [analyticsCategories,
-  setAnalyticsCategories] = useState<any[]>([]);
   // =========================================
-// ANALYTICS FILTERS
-// =========================================
 
-const [
-  analyticsSearch,
-  setAnalyticsSearch,
-] = useState("");
+  const [messageCategories,
+    setMessageCategories] = useState<any[]>([]);
 
-const [
-  analyticsClassFilter,
-  setAnalyticsClassFilter,
-] = useState("ALL");
+  const [analyticsCategories,
+    setAnalyticsCategories] = useState<any[]>([]);
+  // =========================================
+  // ANALYTICS FILTERS
+  // =========================================
 
-const [
-  analyticsCategoryFilter,
-  setAnalyticsCategoryFilter,
-] = useState("ALL");
+  const [
+    analyticsSearch,
+    setAnalyticsSearch,
+  ] = useState("");
 
-const [
-  analyticsStatusFilter,
-  setAnalyticsStatusFilter,
-] = useState("ALL");
+  const [
+    analyticsClassFilter,
+    setAnalyticsClassFilter,
+  ] = useState("ALL");
 
-const [
-  analyticsSort,
-  setAnalyticsSort,
-] = useState("LATEST");
+  const [
+    analyticsCategoryFilter,
+    setAnalyticsCategoryFilter,
+  ] = useState("ALL");
 
-const [
-  expandedAnalyticsId,
-  setExpandedAnalyticsId,
-] = useState("");
+  const [
+    analyticsStatusFilter,
+    setAnalyticsStatusFilter,
+  ] = useState("ALL");
+
+  const [
+    analyticsSort,
+    setAnalyticsSort,
+  ] = useState("LATEST");
+
+  const [
+    expandedAnalyticsId,
+    setExpandedAnalyticsId,
+  ] = useState("");
 
   // =========================================
   // FORM STATES
@@ -288,641 +265,641 @@ const [
     useState("");
 
   const [studentNames, setStudentNames] =
-  useState<any>({});
+    useState<any>({});
 
   const [classNames, setClassNames] =
-  useState<any>({});
+    useState<any>({});
 
   const [showTimelineModal, setShowTimelineModal] =
-  useState(false);
+    useState(false);
 
-const [timelineUpdates, setTimelineUpdates] =
-  useState<any[]>([]);
+  const [timelineUpdates, setTimelineUpdates] =
+    useState<any[]>([]);
 
-const [selectedTaskForTimeline, setSelectedTaskForTimeline] =
-  useState<any>(null);
+  const [selectedTaskForTimeline, setSelectedTaskForTimeline] =
+    useState<any>(null);
 
-const [taskSearch, setTaskSearch] =
-  useState("");
+  const [taskSearch, setTaskSearch] =
+    useState("");
 
-const [taskClassFilter, setTaskClassFilter] =
-  useState("ALL");
+  const [taskClassFilter, setTaskClassFilter] =
+    useState("ALL");
 
-const [taskStudentFilter, setTaskStudentFilter] =
-  useState("ALL");
+  const [taskStudentFilter, setTaskStudentFilter] =
+    useState("ALL");
 
-const [taskStatusFilter, setTaskStatusFilter] =
-  useState("ALL");
+  const [taskStatusFilter, setTaskStatusFilter] =
+    useState("ALL");
 
-const [taskPriorityFilter, setTaskPriorityFilter] =
-  useState("ALL");
+  const [taskPriorityFilter, setTaskPriorityFilter] =
+    useState("ALL");
 
-const [taskSortOption, setTaskSortOption] =
-  useState("LATEST");
+  const [taskSortOption, setTaskSortOption] =
+    useState("LATEST");
 
-// =========================================
-// CLASS DASHBOARD RELATED
+  // =========================================
+  // CLASS DASHBOARD RELATED
 
-const [
-  classDashboardData,
-  setClassDashboardData,
-] = useState<any[]>([]);
+  const [
+    classDashboardData,
+    setClassDashboardData,
+  ] = useState<any[]>([]);
 
-const [
-  dashboardLoading,
-  setDashboardLoading,
-] = useState(false);
+  const [
+    dashboardLoading,
+    setDashboardLoading,
+  ] = useState(false);
 
-const [
-  dashboardSearch,
-  setDashboardSearch,
-] = useState("");
+  const [
+    dashboardSearch,
+    setDashboardSearch,
+  ] = useState("");
 
-const [
-  dashboardSortField,
-  setDashboardSortField,
-] = useState("enrollment_number");
+  const [
+    dashboardSortField,
+    setDashboardSortField,
+  ] = useState("enrollment_number");
 
-const [
-  dashboardSortDirection,
-  setDashboardSortDirection,
-] = useState("asc");
+  const [
+    dashboardSortDirection,
+    setDashboardSortDirection,
+  ] = useState("asc");
 
-const [
-  dashboardSummary,
-  setDashboardSummary,
-] = useState({
-  totalStudents: 0,
-  activeStudents: 0,
-  freeStudents: 0,
-  totalTasks: 0,
-  completedTasks: 0,
-  pendingTasks: 0,
-});
+  const [
+    dashboardSummary,
+    setDashboardSummary,
+  ] = useState({
+    totalStudents: 0,
+    activeStudents: 0,
+    freeStudents: 0,
+    totalTasks: 0,
+    completedTasks: 0,
+    pendingTasks: 0,
+  });
 
-const [
-  dashboardClassFilter,
-  setDashboardClassFilter,
-] = useState("ALL");
+  const [
+    dashboardClassFilter,
+    setDashboardClassFilter,
+  ] = useState("ALL");
 
-const [
-  dashboardStudentFilter,
-  setDashboardStudentFilter,
-] = useState("");
+  const [
+    dashboardStudentFilter,
+    setDashboardStudentFilter,
+  ] = useState("");
 
-const [
-  dashboardCompletedFilter,
-  setDashboardCompletedFilter,
-] = useState("ALL");
+  const [
+    dashboardCompletedFilter,
+    setDashboardCompletedFilter,
+  ] = useState("ALL");
 
-const [
-  dashboardPendingFilter,
-  setDashboardPendingFilter,
-] = useState("ALL");
+  const [
+    dashboardPendingFilter,
+    setDashboardPendingFilter,
+  ] = useState("ALL");
 
 
 
-const [
-  showPendingTasksModal,
-  setShowPendingTasksModal,
-] = useState(false);
+  const [
+    showPendingTasksModal,
+    setShowPendingTasksModal,
+  ] = useState(false);
 
-const [
-  selectedStudentPendingTasks,
-  setSelectedStudentPendingTasks,
-] = useState<any[]>([]);
+  const [
+    selectedStudentPendingTasks,
+    setSelectedStudentPendingTasks,
+  ] = useState<any[]>([]);
 
-const [
-  selectedStudentName,
-  setSelectedStudentName,
-] = useState("");
+  const [
+    selectedStudentName,
+    setSelectedStudentName,
+  ] = useState("");
 
-// CLASS DASHBOARD RELATED
+  // CLASS DASHBOARD RELATED
 
-// =========================================
-// CLASS DASHBOARD RELATED
-// =========================================
-const loadClassDashboard =
-async () => {
-
-  setDashboardLoading(
-    true
-  );
-
-  try {
-
-    // =====================================
-    // GET STUDENTS FROM FACULTY CLASSES
-    // =====================================
-
-    const classIds =
-      classes.map(
-        (cls:any) =>
-          cls.id
-      );
-
-    if (
-      classIds.length === 0
-    ) {
-
-      setDashboardSummary({
-
-        totalStudents: 0,
-
-        activeStudents: 0,
-
-        freeStudents: 0,
-
-        totalTasks: 0,
-
-        completedTasks: 0,
-
-        pendingTasks: 0,
-
-      });
-
-      setClassDashboardData([]);
+  // =========================================
+  // CLASS DASHBOARD RELATED
+  // =========================================
+  const loadClassDashboard =
+    async () => {
 
       setDashboardLoading(
-        false
+        true
       );
 
-      return;
-    }
+      try {
 
-    // =====================================
-    // GET CLASS MEMBERS
-    // =====================================
+        // =====================================
+        // GET STUDENTS FROM FACULTY CLASSES
+        // =====================================
 
-    const {
-      data: members,
-      error: memberError,
-    } = await supabase
+        const classIds =
+          classes.map(
+            (cls: any) =>
+              cls.id
+          );
 
-      .from(
-        "class_members"
-      )
+        if (
+          classIds.length === 0
+        ) {
 
-      .select(`
+          setDashboardSummary({
+
+            totalStudents: 0,
+
+            activeStudents: 0,
+
+            freeStudents: 0,
+
+            totalTasks: 0,
+
+            completedTasks: 0,
+
+            pendingTasks: 0,
+
+          });
+
+          setClassDashboardData([]);
+
+          setDashboardLoading(
+            false
+          );
+
+          return;
+        }
+
+        // =====================================
+        // GET CLASS MEMBERS
+        // =====================================
+
+        const {
+          data: members,
+          error: memberError,
+        } = await supabase
+
+          .from(
+            "class_members"
+          )
+
+          .select(`
         student_id,
         class_id
       `)
 
-      .in(
-        "class_id",
-        classIds
-      );
+          .in(
+            "class_id",
+            classIds
+          );
 
-      const memberMap:any = {};
+        const memberMap: any = {};
 
-        members?.forEach((m:any) => {
+        members?.forEach((m: any) => {
 
           memberMap[m.student_id] =
             m.class_id;
 
         });
 
-    if (
-      memberError
-    ) {
+        if (
+          memberError
+        ) {
 
-      console.log(
-        memberError
-      );
+          console.log(
+            memberError
+          );
 
-      return;
-    }
+          return;
+        }
 
-    const studentIds =
-      [
-        ...new Set(
-          members?.map(
-            (m:any) =>
-              m.student_id
+        const studentIds =
+          [
+            ...new Set(
+              members?.map(
+                (m: any) =>
+                  m.student_id
+              )
+            )
+          ];
+
+        // =====================================
+        // GET STUDENT DETAILS
+        // =====================================
+
+        const {
+          data: students,
+          error: studentError,
+        } = await supabase
+
+          .from(
+            "profiles"
           )
-        )
-      ];
 
-    // =====================================
-    // GET STUDENT DETAILS
-    // =====================================
-
-    const {
-      data: students,
-      error: studentError,
-    } = await supabase
-
-      .from(
-        "profiles"
-      )
-
-      .select(`
+          .select(`
         id,
         enrollment_number,
         full_name
       `)
 
-      .in(
-        "id",
-        studentIds
-      );
-
-    if (
-      studentError
-    ) {
-
-      console.log(
-        studentError
-      );
-
-      return;
-    }
-
-    console.log(
-      "STUDENTS"
-    );
-
-    console.log(
-      students
-    );
-
-    const {
-        data: allTasks,
-        error: taskError,
-      } = await supabase
-
-        .from("tasks")
-
-        .select("*")
-
-        .in(
-          "assigned_to",
-          studentIds
-        );
-
-      if (taskError) {
-
-        console.log(
-          taskError
-        );
-
-        return;
-      }
-
-    // TEMPORARY DATA
-
-      const dashboardRows =
-
-        students?.map(
-          (
-            student:any
-          ) => {
-
-            const studentTasks =
-
-              allTasks?.filter(
-                (
-                  task:any
-                ) =>
-
-                  task.assigned_to ===
-                  student.id
-              ) || [];
-
-            const completedTasks =
-
-              studentTasks.filter(
-                (
-                  task:any
-                ) =>
-
-                  task.status ===
-                  "COMPLETED"
-              ).length;
-
-            const pendingTasks =
-
-              studentTasks.filter(
-                (
-                  task:any
-                ) =>
-
-                  task.status !==
-                  "COMPLETED"
-              ).length;
-
-            const totalProgress =
-
-              studentTasks.reduce(
-                (
-                  sum:number,
-                  task:any
-                ) =>
-
-                  sum +
-                  (
-                    task.current_progress
-                    || 0
-                  ),
-
-                0
-              );
-
-            const averageProgress =
-
-              studentTasks.length > 0
-
-                ?
-
-                Math.round(
-                  totalProgress /
-                  studentTasks.length
-                )
-
-                :
-
-                0;
-
-            return {
-
-              student_id:
-                student.id,
-
-              enrollment_number:
-                student.enrollment_number,
-
-              student_name:
-                student.full_name,
-
-              class_id:
-                  memberMap[student.id] || "",
-
-              total_messages: 0,
-
-              acknowledged: 0,
-
-              pending: 0,
-
-              late: 0,
-
-              total_tasks:
-                studentTasks.length,
-
-              completed_tasks:
-                completedTasks,
-
-              pending_tasks:
-                pendingTasks,
-
-              average_progress:
-                averageProgress,
-            };
-          }
-        ) || [];
-
-    setClassDashboardData(
-      dashboardRows
-    );
-
-      setDashboardSummary({
-
-        totalStudents:
-          dashboardRows.length,
-
-        activeStudents:
-
-          dashboardRows.filter(
-            (row:any) =>
-
-              row.total_tasks > 0
-          ).length,
-
-        freeStudents:
-
-          dashboardRows.filter(
-            (row:any) =>
-
-              row.total_tasks === 0
-          ).length,
-
-        totalTasks:
-
-          dashboardRows.reduce(
-            (
-              sum:number,
-              row:any
-            ) =>
-
-              sum +
-              row.total_tasks,
-
-            0
-          ),
-
-        completedTasks:
-
-          dashboardRows.reduce(
-            (
-              sum:number,
-              row:any
-            ) =>
-
-              sum +
-              row.completed_tasks,
-
-            0
-          ),
-
-        pendingTasks:
-
-          dashboardRows.reduce(
-            (
-              sum:number,
-              row:any
-            ) =>
-
-              sum +
-              row.pending_tasks,
-
-            0
-          ),
-
-      });
-
-  } catch (error) {
-
-    console.log(
-      error
-    );
-
-  }
-
-  setDashboardLoading(
-    false
-  );
-};
-
-// =========================================
-// Click on Task will open Pending tasks modal with list of pending tasks for that student
-// =========================================
-
-const viewPendingTasks =
-(
-  studentId:string,
-  studentName:string
-) => {
-
-  const pendingTasks =
-
-    tasks.filter(
-      (task:any) =>
-
-        task.assigned_to === studentId
-
-        &&
-
-        task.status !== "COMPLETED"
-    );
-
-  setSelectedStudentPendingTasks(
-    pendingTasks
-  );
-
-  setSelectedStudentName(
-    studentName
-  );
-
-  setShowPendingTasksModal(
-    true
-  );
-};
-// =========================================
-// FILTERED ANALYTICS
-// =========================================
-
-const filteredAnalyticsMessages =
-
-  sentMessages
-
-    .filter((msg) => {
-
-      // SEARCH
-
-      const matchesSearch =
-
-        msg.title
-          ?.toLowerCase()
-          .includes(
-            analyticsSearch.toLowerCase()
-          )
-
-        ||
-
-        msg.content
-          ?.toLowerCase()
-          .includes(
-            analyticsSearch.toLowerCase()
+          .in(
+            "id",
+            studentIds
           );
 
-      // CLASS FILTER
+        if (
+          studentError
+        ) {
 
-      const matchesClass =
+          console.log(
+            studentError
+          );
 
-        analyticsClassFilter ===
-        "ALL"
+          return;
+        }
 
-        ||
+        console.log(
+          "STUDENTS"
+        );
 
-        msg.class_id ===
-        analyticsClassFilter;
+        console.log(
+          students
+        );
 
-      // CATEGORY FILTER
+        const {
+          data: allTasks,
+          error: taskError,
+        } = await supabase
 
-      const matchesCategory =
+          .from("tasks")
 
-        analyticsCategoryFilter ===
-        "ALL"
+          .select("*")
 
-        ||
+          .in(
+            "assigned_to",
+            studentIds
+          );
 
-        msg.category_id ===
-        analyticsCategoryFilter;
+        if (taskError) {
 
-      // STATUS FILTER
+          console.log(
+            taskError
+          );
 
-      const stats =
-        analytics[msg.id];
+          return;
+        }
 
-      let status =
-        "PENDING";
+        // TEMPORARY DATA
 
-      if (
-        stats?.pending === 0
-      ) {
+        const dashboardRows =
 
-        status =
-          "COMPLETED";
+          students?.map(
+            (
+              student: any
+            ) => {
+
+              const studentTasks =
+
+                allTasks?.filter(
+                  (
+                    task: any
+                  ) =>
+
+                    task.assigned_to ===
+                    student.id
+                ) || [];
+
+              const completedTasks =
+
+                studentTasks.filter(
+                  (
+                    task: any
+                  ) =>
+
+                    task.status ===
+                    "COMPLETED"
+                ).length;
+
+              const pendingTasks =
+
+                studentTasks.filter(
+                  (
+                    task: any
+                  ) =>
+
+                    task.status !==
+                    "COMPLETED"
+                ).length;
+
+              const totalProgress =
+
+                studentTasks.reduce(
+                  (
+                    sum: number,
+                    task: any
+                  ) =>
+
+                    sum +
+                    (
+                      task.current_progress
+                      || 0
+                    ),
+
+                  0
+                );
+
+              const averageProgress =
+
+                studentTasks.length > 0
+
+                  ?
+
+                  Math.round(
+                    totalProgress /
+                    studentTasks.length
+                  )
+
+                  :
+
+                  0;
+
+              return {
+
+                student_id:
+                  student.id,
+
+                enrollment_number:
+                  student.enrollment_number,
+
+                student_name:
+                  student.full_name,
+
+                class_id:
+                  memberMap[student.id] || "",
+
+                total_messages: 0,
+
+                acknowledged: 0,
+
+                pending: 0,
+
+                late: 0,
+
+                total_tasks:
+                  studentTasks.length,
+
+                completed_tasks:
+                  completedTasks,
+
+                pending_tasks:
+                  pendingTasks,
+
+                average_progress:
+                  averageProgress,
+              };
+            }
+          ) || [];
+
+        setClassDashboardData(
+          dashboardRows
+        );
+
+        setDashboardSummary({
+
+          totalStudents:
+            dashboardRows.length,
+
+          activeStudents:
+
+            dashboardRows.filter(
+              (row: any) =>
+
+                row.total_tasks > 0
+            ).length,
+
+          freeStudents:
+
+            dashboardRows.filter(
+              (row: any) =>
+
+                row.total_tasks === 0
+            ).length,
+
+          totalTasks:
+
+            dashboardRows.reduce(
+              (
+                sum: number,
+                row: any
+              ) =>
+
+                sum +
+                row.total_tasks,
+
+              0
+            ),
+
+          completedTasks:
+
+            dashboardRows.reduce(
+              (
+                sum: number,
+                row: any
+              ) =>
+
+                sum +
+                row.completed_tasks,
+
+              0
+            ),
+
+          pendingTasks:
+
+            dashboardRows.reduce(
+              (
+                sum: number,
+                row: any
+              ) =>
+
+                sum +
+                row.pending_tasks,
+
+              0
+            ),
+
+        });
+
+      } catch (error) {
+
+        console.log(
+          error
+        );
+
       }
 
-      const matchesStatus =
-
-        analyticsStatusFilter ===
-        "ALL"
-
-        ||
-
-        analyticsStatusFilter
-        === status;
-        
-      
-
-      
-      return (
-
-        matchesSearch
-        &&
-        matchesClass
-        &&
-        matchesCategory
-        &&
-        matchesStatus
+      setDashboardLoading(
+        false
       );
-    })
+    };
 
-    .sort((a, b) => {
+  // =========================================
+  // Click on Task will open Pending tasks modal with list of pending tasks for that student
+  // =========================================
 
-      if (
-        analyticsSort ===
-        "LATEST"
-      ) {
+  const viewPendingTasks =
+    (
+      studentId: string,
+      studentName: string
+    ) => {
+
+      const pendingTasks =
+
+        tasks.filter(
+          (task: any) =>
+
+            task.assigned_to === studentId
+
+            &&
+
+            task.status !== "COMPLETED"
+        );
+
+      setSelectedStudentPendingTasks(
+        pendingTasks
+      );
+
+      setSelectedStudentName(
+        studentName
+      );
+
+      setShowPendingTasksModal(
+        true
+      );
+    };
+  // =========================================
+  // FILTERED ANALYTICS
+  // =========================================
+
+  const filteredAnalyticsMessages =
+
+    sentMessages
+
+      .filter((msg) => {
+
+        // SEARCH
+
+        const matchesSearch =
+
+          msg.title
+            ?.toLowerCase()
+            .includes(
+              analyticsSearch.toLowerCase()
+            )
+
+          ||
+
+          msg.content
+            ?.toLowerCase()
+            .includes(
+              analyticsSearch.toLowerCase()
+            );
+
+        // CLASS FILTER
+
+        const matchesClass =
+
+          analyticsClassFilter ===
+          "ALL"
+
+          ||
+
+          msg.class_id ===
+          analyticsClassFilter;
+
+        // CATEGORY FILTER
+
+        const matchesCategory =
+
+          analyticsCategoryFilter ===
+          "ALL"
+
+          ||
+
+          msg.category_id ===
+          analyticsCategoryFilter;
+
+        // STATUS FILTER
+
+        const stats =
+          analytics[msg.id];
+
+        let status =
+          "PENDING";
+
+        if (
+          stats?.pending === 0
+        ) {
+
+          status =
+            "COMPLETED";
+        }
+
+        const matchesStatus =
+
+          analyticsStatusFilter ===
+          "ALL"
+
+          ||
+
+          analyticsStatusFilter
+          === status;
+
+
+
+
+        return (
+
+          matchesSearch
+          &&
+          matchesClass
+          &&
+          matchesCategory
+          &&
+          matchesStatus
+        );
+      })
+
+      .sort((a, b) => {
+
+        if (
+          analyticsSort ===
+          "LATEST"
+        ) {
+
+          return (
+
+            new Date(
+              b.created_at
+            ).getTime()
+
+            -
+
+            new Date(
+              a.created_at
+            ).getTime()
+          );
+        }
 
         return (
 
           new Date(
-            b.created_at
+            a.created_at
           ).getTime()
 
           -
 
           new Date(
-            a.created_at
+            b.created_at
           ).getTime()
         );
-      }
-
-      return (
-
-        new Date(
-          a.created_at
-        ).getTime()
-
-        -
-
-        new Date(
-          b.created_at
-        ).getTime()
-      );
-    });
+      });
 
   // =========================================
   // AUTH CHECK
@@ -937,21 +914,21 @@ const filteredAnalyticsMessages =
   // =========================================
   // CHECK ACCOUNT SUSPENDED OR BLOCKED
   // =========================================
-      useEffect(() => {
+  useEffect(() => {
+
+    checkUserStatus();
+
+    const interval =
+      setInterval(() => {
 
         checkUserStatus();
 
-        const interval =
-          setInterval(() => {
+      }, 10000);
 
-            checkUserStatus();
+    return () =>
+      clearInterval(interval);
 
-          }, 10000);
-
-        return () =>
-          clearInterval(interval);
-
-      }, []);
+  }, []);
   // =========================================
   // CHECK USER
   // =========================================
@@ -964,7 +941,7 @@ const filteredAnalyticsMessages =
           user
         }
       } =
-      await supabase.auth.getUser();
+        await supabase.auth.getUser();
 
       if (!user) {
 
@@ -980,18 +957,18 @@ const filteredAnalyticsMessages =
       const {
         data
       } =
-      await supabase
+        await supabase
 
-        .from("profiles")
+          .from("profiles")
 
-        .select("*")
+          .select("*")
 
-        .eq(
-          "id",
-          user.id
-        )
+          .eq(
+            "id",
+            user.id
+          )
 
-        .single();
+          .single();
 
       if (!data) {
 
@@ -1040,34 +1017,34 @@ const filteredAnalyticsMessages =
   // FETCH ASSIGNED CLASSES
   // =========================================
 
- const fetchAssignedClasses =
-  async (
-    facultyId: string
-  ) => {
+  const fetchAssignedClasses =
+    async (
+      facultyId: string
+    ) => {
 
-    const { data } =
-      await supabase
+      const { data } =
+        await supabase
 
-        .from("classes")
+          .from("classes")
 
-        .select("*")
+          .select("*")
 
-        .eq(
-          "faculty_coordinator_id",
-          facultyId
-        );
+          .eq(
+            "faculty_coordinator_id",
+            facultyId
+          );
 
-        console.log("FACULTY ID");
-        console.log(facultyId);
+      console.log("FACULTY ID");
+      console.log(facultyId);
 
-        console.log("CLASSES");
-        console.log(data);
+      console.log("CLASSES");
+      console.log(data);
 
-        if (data) {
+      if (data) {
 
-          setClasses(data);
-        }
-  };
+        setClasses(data);
+      }
+    };
   // =========================================
   // FETCH ASSIGNED CLASSES STUDENTS
   // =========================================
@@ -1204,7 +1181,7 @@ const filteredAnalyticsMessages =
       const studentIds =
 
         members?.map(
-          (m:any) =>
+          (m: any) =>
             m.student_id
         ) || [];
 
@@ -1256,168 +1233,167 @@ const filteredAnalyticsMessages =
   // FETCH TASKS
   // =========================================
 
-const fetchTasks = async (
-  facultyId: string
-  ) => 
-    {
+  const fetchTasks = async (
+    facultyId: string
+  ) => {
 
-      setLoadingTasks(true);
+    setLoadingTasks(true);
 
-      const { data, error } =
-        await supabase
-          .from("tasks")
-          .select("*")
-          .eq(
-            "assigned_by",
-            facultyId
-          );
+    const { data, error } =
+      await supabase
+        .from("tasks")
+        .select("*")
+        .eq(
+          "assigned_by",
+          facultyId
+        );
 
-      console.log("FACULTY ID");
-      console.log(facultyId);
+    console.log("FACULTY ID");
+    console.log(facultyId);
 
-      console.log("TASK DATA");
-      console.log(data);
+    console.log("TASK DATA");
+    console.log(data);
 
-      console.log("TASK ERROR");
-      console.log(error);
+    console.log("TASK ERROR");
+    console.log(error);
 
-      if (error) {
+    if (error) {
 
-        alert(error.message);
-
-        setLoadingTasks(false);
-
-        return;
-      }
-
-      setTasks(data || []);
+      alert(error.message);
 
       setLoadingTasks(false);
-    };
+
+      return;
+    }
+
+    setTasks(data || []);
+
+    setLoadingTasks(false);
+  };
 
 
-    const fetchStudentNames =
-      async () => {
+  const fetchStudentNames =
+    async () => {
 
-        const {
-          data,
-          error,
-        } = await supabase
+      const {
+        data,
+        error,
+      } = await supabase
 
-          .from("profiles")
+        .from("profiles")
 
-          .select(`
+        .select(`
             id,
             full_name,
             enrollment_number
           `);
 
-        if (error) {
+      if (error) {
 
-          console.log(error);
+        console.log(error);
 
-          return;
+        return;
+      }
+
+      const map: any = {};
+
+      data?.forEach(
+        (student) => {
+
+          map[student.id] =
+            student;
         }
+      );
 
-        const map: any = {};
-
-        data?.forEach(
-          (student) => {
-
-            map[student.id] =
-              student;
-          }
-        );
-
-        setStudentNames(map);
-      };
+      setStudentNames(map);
+    };
 
 
-      const fetchClassNames =
-        async () => {
+  const fetchClassNames =
+    async () => {
 
-          const {
-            data,
-            error,
-          } = await supabase
+      const {
+        data,
+        error,
+      } = await supabase
 
-            .from("classes")
+        .from("classes")
 
-            .select(`
+        .select(`
               id,
               name,
               section
             `);
 
-          if (error) {
+      if (error) {
 
-            console.log(error);
+        console.log(error);
 
-            return;
+        return;
+      }
+
+      const map: any = {};
+
+      data?.forEach(
+        (cls) => {
+
+          map[cls.id] = cls;
+        }
+      );
+
+      setClassNames(map);
+    };
+
+
+  // =========================================
+  // FETCH TASK TIMELINE
+  // =========================================
+
+  const fetchTaskTimeline =
+    async (
+      taskId: string
+    ) => {
+
+      const {
+        data,
+        error,
+      } = await supabase
+
+        .from(
+          "task_updates"
+        )
+
+        .select("*")
+
+        .eq(
+          "task_id",
+          taskId
+        )
+
+        .order(
+          "created_at",
+          {
+            ascending: false,
           }
+        );
 
-          const map: any = {};
+      if (error) {
 
-          data?.forEach(
-            (cls) => {
+        alert(
+          error.message
+        );
 
-              map[cls.id] = cls;
-            }
-          );
+        return;
+      }
 
-          setClassNames(map);
-        };
-
-
-      // =========================================
-      // FETCH TASK TIMELINE
-      // =========================================
-
-      const fetchTaskTimeline =
-        async (
-          taskId: string
-        ) => {
-
-          const {
-            data,
-            error,
-          } = await supabase
-
-            .from(
-              "task_updates"
-            )
-
-            .select("*")
-
-            .eq(
-              "task_id",
-              taskId
-            )
-
-            .order(
-              "created_at",
-              {
-                ascending: false,
-              }
-            );
-
-          if (error) {
-
-            alert(
-              error.message
-            );
-
-            return;
-          }
-
-          setTimelineUpdates(
-            data || []
-          );
-        };
+      setTimelineUpdates(
+        data || []
+      );
+    };
 
 
 
-        
+
   // =========================================
   // CREATE TASK
   // =========================================
@@ -1553,30 +1529,30 @@ const fetchTasks = async (
       );
     };
 
-    // =========================================
-    // FETCH ANALYTICS CATEGORIES
-    // =========================================
-          const fetchAnalyticsCategories = async () => {
+  // =========================================
+  // FETCH ANALYTICS CATEGORIES
+  // =========================================
+  const fetchAnalyticsCategories = async () => {
 
-          const { data } = await supabase
+    const { data } = await supabase
 
-              .from("message_categories")
+      .from("message_categories")
 
-              .select("*")
+      .select("*")
 
-              .order("name");
+      .order("name");
 
-          if (data) {
+    if (data) {
 
-              setAnalyticsCategories(data || []);
+      setAnalyticsCategories(data || []);
 
-          }
+    }
 
-      };
+  };
 
-    // =========================================
-    // FETCH ANALYTICS
-    // =========================================
+  // =========================================
+  // FETCH ANALYTICS
+  // =========================================
 
   const fetchAnalytics =
     async (
@@ -1587,49 +1563,49 @@ const fetchTasks = async (
 
       // STUDENTS
 
-  const {
-    data: members,
-    error: memberError,
-  } = await supabase
+      const {
+        data: members,
+        error: memberError,
+      } = await supabase
 
-    .from("class_members")
+        .from("class_members")
 
-    .select("student_id")
+        .select("student_id")
 
-    .eq(
-      "class_id",
-      classId
-    );
+        .eq(
+          "class_id",
+          classId
+        );
 
-  const memberMap:any = {};
+      const memberMap: any = {};
 
-    members?.forEach((m:any) => {
+      members?.forEach((m: any) => {
 
-      memberMap[m.student_id] =
-        m.class_id;
+        memberMap[m.student_id] =
+          m.class_id;
 
-    });
+      });
 
-  if (memberError) {
+      if (memberError) {
 
-    console.log(memberError);
+        console.log(memberError);
 
-    return;
-  }
+        return;
+      }
 
-  const studentIds =
-    members?.map(
-      (m:any) => m.student_id
-    ) || [];
+      const studentIds =
+        members?.map(
+          (m: any) => m.student_id
+        ) || [];
 
-  const {
-    data: students,
-    error: studentError,
-  } = await supabase
+      const {
+        data: students,
+        error: studentError,
+      } = await supabase
 
-    .from("profiles")
+        .from("profiles")
 
-    .select(`
+        .select(`
       id,
       full_name,
       email,
@@ -1637,17 +1613,17 @@ const fetchTasks = async (
       enrollment_number
     `)
 
-    .in(
-      "id",
-      studentIds
-    );
+        .in(
+          "id",
+          studentIds
+        );
 
-  if (studentError) {
+      if (studentError) {
 
-    console.log(studentError);
+        console.log(studentError);
 
-    return;
-  }
+        return;
+      }
 
       const total =
         students?.length || 0;
@@ -1662,7 +1638,7 @@ const fetchTasks = async (
           "message_acknowledgements"
         )
 
-      .select(`
+        .select(`
         user_id,
         acknowledged,
         acknowledged_at,
@@ -1680,79 +1656,79 @@ const fetchTasks = async (
           messageId
         );
 
-        const acknowledged =
-          acknowledgements
+      const acknowledged =
+        acknowledgements
 
-            ?.filter((ack: any) => {
+          ?.filter((ack: any) => {
 
-              if (
-                !ack.acknowledged_at
-              ) {
+            if (
+              !ack.acknowledged_at
+            ) {
 
-                return false;
-              }
+              return false;
+            }
 
-              if (!msgDeadline) {
+            if (!msgDeadline) {
 
-                return true;
-              }
+              return true;
+            }
 
-              return (
+            return (
 
-                new Date(
-                  ack.acknowledged_at
-                ).getTime()
+              new Date(
+                ack.acknowledged_at
+              ).getTime()
 
-                <=
+              <=
 
-                new Date(
-                  msgDeadline
-                ).getTime()
-              );
-            })
+              new Date(
+                msgDeadline
+              ).getTime()
+            );
+          })
 
-            .length || 0;
+          .length || 0;
 
-        const late =
-          acknowledgements
+      const late =
+        acknowledgements
 
-            ?.filter((ack: any) => {
+          ?.filter((ack: any) => {
 
-              if (
-                !ack.acknowledged_at
-              ) {
+            if (
+              !ack.acknowledged_at
+            ) {
 
-                return false;
-              }
+              return false;
+            }
 
-              if (!msgDeadline) {
+            if (!msgDeadline) {
 
-                return false;
-              }
+              return false;
+            }
 
-              return (
+            return (
 
-                new Date(
-                  ack.acknowledged_at
-                ).getTime()
+              new Date(
+                ack.acknowledged_at
+              ).getTime()
 
-                >
+              >
 
-                new Date(
-                  msgDeadline
-                ).getTime()
-              );
-            })
+              new Date(
+                msgDeadline
+              ).getTime()
+            );
+          })
 
-            .length || 0;
-            
-          const totalAcknowledged =
-            acknowledged +
-            late;
+          .length || 0;
 
-          const pending =
-            total -
-            totalAcknowledged;
+      const totalAcknowledged =
+        acknowledged +
+        late;
+
+      const pending =
+        total -
+        totalAcknowledged;
 
       // SAVE COUNTS
 
@@ -1841,7 +1817,7 @@ const fetchTasks = async (
               acknowledged_at:
                 ack
                   ?.acknowledged_at
-                  || "--",
+                || "--",
 
             };
           }
@@ -1866,7 +1842,7 @@ const fetchTasks = async (
   const handleCreateCategory =
     async () => {
 
-            if (!selectedClass) {
+      if (!selectedClass) {
 
         alert(
           "Please select a Group."
@@ -1919,9 +1895,9 @@ const fetchTasks = async (
       );
 
       setCategoryName("");
-      
+
       setSelectedClass("");
-      
+
       fetchCategories(
         selectedClass
       );
@@ -1931,215 +1907,215 @@ const fetchTasks = async (
   // FETCH CATEGORIES
   // =========================================
 
-    const fetchCategories =
-      async (
-        classId: string
-      ) => {
+  const fetchCategories =
+    async (
+      classId: string
+    ) => {
 
-        const {
-          data,
-          error,
-        } = await supabase
+      const {
+        data,
+        error,
+      } = await supabase
 
-          .from(
-            "message_categories"
-          )
+        .from(
+          "message_categories"
+        )
 
-          .select("*")
+        .select("*")
 
-          .eq(
-            "class_id",
-            classId
-          )
+        .eq(
+          "class_id",
+          classId
+        )
 
-          .order(
-            "name",
-            {
-              ascending: true,
-            }
-          );
-
-        if (error) {
-
-          console.log(error);
-
-          return;
-
-        }
-
-        setMessageCategories(
-          data || []
+        .order(
+          "name",
+          {
+            ascending: true,
+          }
         );
+
+      if (error) {
+
+        console.log(error);
+
+        return;
+
+      }
+
+      setMessageCategories(
+        data || []
+      );
     };
 
-// =========================================
-// FETCH SENT MESSAGES
-// =========================================
+  // =========================================
+  // FETCH SENT MESSAGES
+  // =========================================
 
-const fetchSentMessages =
-  async (
-    facultyId: string
-  ) => {
+  const fetchSentMessages =
+    async (
+      facultyId: string
+    ) => {
 
-    const {
-      data,
-      error,
-    } = await supabase
+      const {
+        data,
+        error,
+      } = await supabase
 
-      .from("messages")
+        .from("messages")
 
-      .select("*")
+        .select("*")
 
-      .eq(
-        "sender_id",
-        facultyId
-      )
+        .eq(
+          "sender_id",
+          facultyId
+        )
 
-      .order(
-        "created_at",
-        {
-          ascending: false,
-        }
+        .order(
+          "created_at",
+          {
+            ascending: false,
+          }
+        );
+
+      if (error) {
+
+        console.log(error);
+
+        return;
+      }
+
+      setSentMessages(
+        data || []
       );
 
-    if (error) {
+      // LOAD ANALYTICS
 
-      console.log(error);
+      data?.forEach(
+        (msg: any) => {
 
-      return;
-    }
-
-    setSentMessages(
-      data || []
-    );
-
-    // LOAD ANALYTICS
-
-    data?.forEach(
-      (msg: any) => {
-
-        fetchAnalytics(
-          msg.id,
-          msg.class_id,
-          msg.acknowledgement_deadline
-        );
-      }
-    );
-  };
+          fetchAnalytics(
+            msg.id,
+            msg.class_id,
+            msg.acknowledgement_deadline
+          );
+        }
+      );
+    };
 
   // =========================================
   // SEND MESSAGE
   // =========================================
 
-const handleSendMessage =
-  async () => {
+  const handleSendMessage =
+    async () => {
 
-    if (!selectedClass) {
+      if (!selectedClass) {
+
+        alert(
+          "Select class"
+        );
+
+        return;
+      }
+
+      if (!selectedCategory) {
+
+        alert(
+          "Select category"
+        );
+
+        return;
+      }
+
+      if (!title) {
+
+        alert(
+          "Title required"
+        );
+
+        return;
+      }
+
+      if (!message) {
+
+        alert(
+          "Message required"
+        );
+
+        return;
+      }
+
+      const { error } =
+        await supabase
+
+          .from("messages")
+
+          .insert([
+            {
+
+              institute_id:
+                profile.institute_id,
+
+              department_id:
+                profile.department_id,
+
+              sender_id:
+                profile.id,
+
+              class_id:
+                selectedClass,
+
+              category_id:
+                selectedCategory,
+
+              title:
+                title,
+
+              content:
+                message,
+
+              acknowledgement_required:
+                true,
+
+              acknowledgement_deadline:
+                new Date(
+                  deadline
+                ).toISOString(),
+
+              target_type:
+                "CLASS",
+
+            },
+          ]);
+
+      if (error) {
+
+        alert(
+          error.message
+        );
+
+        return;
+      }
 
       alert(
-        "Select class"
+        "Message sent successfully"
       );
 
-      return;
-    }
-
-    if (!selectedCategory) {
-
-      alert(
-        "Select category"
+      fetchSentMessages(
+        profile.id
       );
 
-      return;
-    }
+      setSelectedClass("");
 
-    if (!title) {
+      setSelectedCategory("");
 
-      alert(
-        "Title required"
-      );
+      setTitle("");
 
-      return;
-    }
+      setMessage("");
 
-    if (!message) {
-
-      alert(
-        "Message required"
-      );
-
-      return;
-    }
-
-    const { error } =
-      await supabase
-
-        .from("messages")
-
-        .insert([
-          {
-
-            institute_id:
-              profile.institute_id,
-
-            department_id:
-              profile.department_id,
-
-            sender_id:
-              profile.id,
-
-            class_id:
-              selectedClass,
-
-            category_id:
-              selectedCategory,
-
-            title:
-              title,
-
-            content:
-              message,
-
-            acknowledgement_required:
-              true,
-
-            acknowledgement_deadline:
-              new Date(
-                deadline
-              ).toISOString(),
-
-            target_type:
-              "CLASS",
-
-          },
-        ]);
-
-    if (error) {
-
-      alert(
-        error.message
-      );
-
-      return;
-    }
-
-    alert(
-      "Message sent successfully"
-    );
-
-    fetchSentMessages(
-       profile.id
-    );
-
-    setSelectedClass("");
-
-    setSelectedCategory("");
-
-    setTitle("");
-
-    setMessage("");
-
-    setDeadline("");
-  };
+      setDeadline("");
+    };
 
   // =========================================
   // LOAD STUDENT ANALYTICS
@@ -2153,7 +2129,7 @@ const handleSendMessage =
 
       const allStudents =
         allStudentAnalytics[
-          messageId
+        messageId
         ] || [];
 
       let filtered =
@@ -2265,141 +2241,141 @@ const handleSendMessage =
     };
 
 
-    const filteredTasks =
-      tasks
+  const filteredTasks =
+    tasks
 
-        .filter(
-          (task: any) => {
+      .filter(
+        (task: any) => {
 
-            const matchesSearch =
+          const matchesSearch =
 
-              task.title
-                ?.toLowerCase()
-                .includes(
-                  taskSearch
-                    .toLowerCase()
-                );
+            task.title
+              ?.toLowerCase()
+              .includes(
+                taskSearch
+                  .toLowerCase()
+              );
 
-            const matchesClass =
+          const matchesClass =
 
-              taskClassFilter ===
-              "ALL"
+            taskClassFilter ===
+            "ALL"
 
-              ||
+            ||
 
-              task.class_id ===
-              taskClassFilter;
+            task.class_id ===
+            taskClassFilter;
 
-            const matchesStudent =
+          const matchesStudent =
 
-              taskStudentFilter ===
-              "ALL"
+            taskStudentFilter ===
+            "ALL"
 
-              ||
+            ||
 
-              task.assigned_to ===
-              taskStudentFilter;
+            task.assigned_to ===
+            taskStudentFilter;
 
-            const matchesStatus =
+          const matchesStatus =
 
-              taskStatusFilter ===
-              "ALL"
+            taskStatusFilter ===
+            "ALL"
 
-              ||
+            ||
 
-              task.status ===
-              taskStatusFilter;
+            task.status ===
+            taskStatusFilter;
 
-            const matchesPriority =
+          const matchesPriority =
 
-              taskPriorityFilter ===
-              "ALL"
+            taskPriorityFilter ===
+            "ALL"
 
-              ||
+            ||
 
-              task.priority ===
-              taskPriorityFilter;
+            task.priority ===
+            taskPriorityFilter;
+
+          return (
+
+            matchesSearch
+
+            &&
+
+            matchesClass
+
+            &&
+
+            matchesStudent
+
+            &&
+
+            matchesStatus
+
+            &&
+
+            matchesPriority
+          );
+        }
+      )
+
+      .sort(
+        (
+          a: any,
+          b: any
+        ) => {
+
+          if (
+            taskSortOption ===
+            "LATEST"
+          ) {
 
             return (
+              new Date(
+                b.created_at
+              ).getTime()
 
-              matchesSearch
+              -
 
-              &&
-
-              matchesClass
-
-              &&
-
-              matchesStudent
-
-              &&
-
-              matchesStatus
-
-              &&
-
-              matchesPriority
+              new Date(
+                a.created_at
+              ).getTime()
             );
           }
-        )
 
-        .sort(
-          (
-            a: any,
-            b: any
-          ) => {
+          if (
+            taskSortOption ===
+            "OLDEST"
+          ) {
 
-            if (
-              taskSortOption ===
-              "LATEST"
-            ) {
+            return (
+              new Date(
+                a.created_at
+              ).getTime()
 
-              return (
-                new Date(
-                  b.created_at
-                ).getTime()
+              -
 
-                -
-
-                new Date(
-                  a.created_at
-                ).getTime()
-              );
-            }
-
-            if (
-              taskSortOption ===
-              "OLDEST"
-            ) {
-
-              return (
-                new Date(
-                  a.created_at
-                ).getTime()
-
-                -
-
-                new Date(
-                  b.created_at
-                ).getTime()
-              );
-            }
-
-            return 0;
+              new Date(
+                b.created_at
+              ).getTime()
+            );
           }
-        );
 
-          // =========================================
-          // FILTERED DASHBOARD DATA
-const filteredDashboardData =
+          return 0;
+        }
+      );
 
-  classDashboardData.filter(
-    (row: any) => {
+  // =========================================
+  // FILTERED DASHBOARD DATA
+  const filteredDashboardData =
 
-      console.log("Selected Class:", dashboardClassFilter);
-console.log("Row Class:", row.class_name);
+    classDashboardData.filter(
+      (row: any) => {
 
-      /* CLASS FILTER */
+        console.log("Selected Class:", dashboardClassFilter);
+        console.log("Row Class:", row.class_name);
+
+        /* CLASS FILTER */
 
         const matchesClass =
 
@@ -2410,93 +2386,93 @@ console.log("Row Class:", row.class_name);
           row.class_id ===
           dashboardClassFilter;
 
-      /* STUDENT FILTER */
+        /* STUDENT FILTER */
 
-      const matchesStudent =
+        const matchesStudent =
 
-        !dashboardStudentFilter
+          !dashboardStudentFilter
 
-        ||
+          ||
 
-        row.student_name
-          ?.toLowerCase()
-          .includes(
-            dashboardStudentFilter.toLowerCase()
+          row.student_name
+            ?.toLowerCase()
+            .includes(
+              dashboardStudentFilter.toLowerCase()
+            );
+
+        /* COMPLETED FILTER */
+
+        const matchesCompleted =
+
+          dashboardCompletedFilter === "ALL"
+
+          ||
+
+          (
+            dashboardCompletedFilter === "YES"
+
+            &&
+
+            row.completed_tasks > 0
+          )
+
+          ||
+
+          (
+            dashboardCompletedFilter === "NO"
+
+            &&
+
+            row.completed_tasks === 0
           );
 
-      /* COMPLETED FILTER */
+        /* PENDING FILTER */
 
-      const matchesCompleted =
+        const matchesPending =
 
-        dashboardCompletedFilter === "ALL"
+          dashboardPendingFilter === "ALL"
 
-        ||
+          ||
 
-        (
-          dashboardCompletedFilter === "YES"
+          (
+            dashboardPendingFilter === "YES"
+
+            &&
+
+            row.pending_tasks > 0
+          )
+
+          ||
+
+          (
+            dashboardPendingFilter === "NO"
+
+            &&
+
+            row.pending_tasks === 0
+          );
+
+        return (
+
+          matchesClass
 
           &&
 
-          row.completed_tasks > 0
-        )
-
-        ||
-
-        (
-          dashboardCompletedFilter === "NO"
+          matchesStudent
 
           &&
 
-          row.completed_tasks === 0
+          matchesCompleted
+
+          &&
+
+          matchesPending
+
         );
+      }
+    );
 
-      /* PENDING FILTER */
 
-      const matchesPending =
-
-        dashboardPendingFilter === "ALL"
-
-        ||
-
-        (
-          dashboardPendingFilter === "YES"
-
-          &&
-
-          row.pending_tasks > 0
-        )
-
-        ||
-
-        (
-          dashboardPendingFilter === "NO"
-
-          &&
-
-          row.pending_tasks === 0
-        );
-
-      return (
-
-        matchesClass
-
-        &&
-
-        matchesStudent
-
-        &&
-
-        matchesCompleted
-
-        &&
-
-        matchesPending
-
-      );
-    }
-  );
-
-  
 
 
 
@@ -2513,7 +2489,7 @@ console.log("Row Class:", row.class_name);
       router.push("/");
     };
 
-  
+
   // =========================================
   // UI
   // =========================================
@@ -2556,14 +2532,13 @@ console.log("Row Class:", row.class_name);
                 "HOME"
               )
             }
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
+            className={`rounded px-4 py-3 text-left transition ${activeModule ===
               "HOME"
 
-                ? "bg-blue-600"
+              ? "bg-blue-600"
 
-                : "hover:bg-gray-800"
-            }`}
+              : "hover:bg-gray-800"
+              }`}
           >
 
             Home
@@ -2578,14 +2553,13 @@ console.log("Row Class:", row.class_name);
                 "CLASSES"
               )
             }
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
+            className={`rounded px-4 py-3 text-left transition ${activeModule ===
               "CLASSES"
 
-                ? "bg-blue-600"
+              ? "bg-blue-600"
 
-                : "hover:bg-gray-800"
-            }`}
+              : "hover:bg-gray-800"
+              }`}
           >
 
             Assigned Classes
@@ -2600,14 +2574,13 @@ console.log("Row Class:", row.class_name);
                 "CATEGORY"
               )
             }
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
+            className={`rounded px-4 py-3 text-left transition ${activeModule ===
               "CATEGORY"
 
-                ? "bg-blue-600"
+              ? "bg-blue-600"
 
-                : "hover:bg-gray-800"
-            }`}
+              : "hover:bg-gray-800"
+              }`}
           >
 
             Add Category
@@ -2622,14 +2595,13 @@ console.log("Row Class:", row.class_name);
                 "MESSAGE"
               )
             }
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
+            className={`rounded px-4 py-3 text-left transition ${activeModule ===
               "MESSAGE"
 
-                ? "bg-blue-600"
+              ? "bg-blue-600"
 
-                : "hover:bg-gray-800"
-            }`}
+              : "hover:bg-gray-800"
+              }`}
           >
 
             Send Message
@@ -2641,17 +2613,16 @@ console.log("Row Class:", row.class_name);
           <button
             onClick={() => {
 
-                setActiveModule("ANALYTICS");
-                fetchAnalyticsCategories();
-              }}
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
+              setActiveModule("ANALYTICS");
+              fetchAnalyticsCategories();
+            }}
+            className={`rounded px-4 py-3 text-left transition ${activeModule ===
               "ANALYTICS"
 
-                ? "bg-blue-600"
+              ? "bg-blue-600"
 
-                : "hover:bg-gray-800"
-            }`}
+              : "hover:bg-gray-800"
+              }`}
           >
 
             Message Analytics
@@ -2666,20 +2637,19 @@ console.log("Row Class:", row.class_name);
                 "TASKS"
               )
             }
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
+            className={`rounded px-4 py-3 text-left transition ${activeModule ===
               "TASKS"
 
-                ? "bg-blue-600"
+              ? "bg-blue-600"
 
-                : "hover:bg-gray-800"
-            }`}
+              : "hover:bg-gray-800"
+              }`}
           >
 
             Tasks
 
           </button>
- 
+
           {/* CLASS_DASHBOARD */}
 
           <button
@@ -2692,12 +2662,11 @@ console.log("Row Class:", row.class_name);
               loadClassDashboard();
 
             }}
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
+            className={`rounded px-4 py-3 text-left transition ${activeModule ===
               "CLASS_DASHBOARD"
-                ? "bg-blue-600"
-                : "hover:bg-gray-800"
-            }`}
+              ? "bg-blue-600"
+              : "hover:bg-gray-800"
+              }`}
           >
             Class Dashboard
           </button>
@@ -2710,14 +2679,13 @@ console.log("Row Class:", row.class_name);
                 "EVENTS"
               )
             }
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
+            className={`rounded px-4 py-3 text-left transition ${activeModule ===
               "EVENTS"
 
-                ? "bg-blue-600"
+              ? "bg-blue-600"
 
-                : "hover:bg-gray-800"
-            }`}
+              : "hover:bg-gray-800"
+              }`}
           >
 
             Events
@@ -2727,6 +2695,7 @@ console.log("Row Class:", row.class_name);
         </div>
 
       </div>
+
 
       {/* MAIN CONTENT */}
 
@@ -2823,842 +2792,330 @@ console.log("Row Class:", row.class_name);
         HOME MODULE
         ========================================= */}
 
-{
-  activeModule === "HOME" && (
-    <HomeSection
-      stats={{
-        classes,
-        sentMessages,
-      }}
-    />
-  )
-}
+        {
+          activeModule === "HOME" && (
+            <HomeSection
+              stats={{
+                classes,
+                sentMessages,
+              }}
+            />
+          )
+        }
 
         {/* =========================================
-        CLASSES MODULE
-        ========================================= */}
-{
-  activeModule === "CLASSES" && (
-    <GroupsSection
-      groups={classes}
-      selectedGroupStudents={selectedClassStudents}
-      selectedGroupName={selectedClassName}
-      onOpenGroup={(groupId, groupName) =>
-        fetchClassStudents(groupId, groupName)
-      }
-    />
-  )
-}
+                CLASSES MODULE
+                ========================================= */}
+        {
+          activeModule === "CLASSES" && (
+            <GroupsSection
+              groups={classes}
+              selectedGroupStudents={selectedClassStudents}
+              selectedGroupName={selectedClassName}
+              onOpenGroup={(groupId, groupName) =>
+                fetchClassStudents(groupId, groupName)
+              }
+            />
+          )
+        }
         {/* =========================================
-        CATEGORY MODULE
-        ========================================= */}
+                CATEGORY MODULE
+                ========================================= */}
 
-{
-  activeModule === "CATEGORY" && (
-<CategorySection
-  groups={classes}
-  selectedGroup={selectedClass}
-  onGroupChange={(groupId) => {
-    setSelectedClass(groupId);
-    fetchCategories(groupId);
-  }}
-  categoryName={categoryName}
-  setCategoryName={setCategoryName}
-  messageCategories={messageCategories}
-  handleCreateCategory={handleCreateCategory}
-/>
-  )
-}
-
-        {/* =========================================
-        MESSAGE MODULE
-        ========================================= */}
-
-{
-  activeModule === "MESSAGE" && (
-
-    <MessageSection
-
-      groups={classes}
-      categories={messageCategories}
-
-      selectedGroup={selectedClass}
-      setSelectedGroup={setSelectedClass}
-
-      selectedCategory={selectedCategory}
-      setSelectedCategory={setSelectedCategory}
-
-      title={title}
-      setTitle={setTitle}
-
-      message={message}
-      setMessage={setMessage}
-
-      deadline={deadline}
-      setDeadline={setDeadline}
-
-      onGroupChange={(groupId) => {
-
-        setSelectedClass(groupId);
-
-        fetchCategories(groupId);
-
-      }}
-
-      handleSendMessage={handleSendMessage}
-
-    />
-
-  )
-}
+        {
+          activeModule === "CATEGORY" && (
+            <CategorySection
+              groups={classes}
+              selectedGroup={selectedClass}
+              onGroupChange={(groupId) => {
+                setSelectedClass(groupId);
+                fetchCategories(groupId);
+              }}
+              categoryName={categoryName}
+              setCategoryName={setCategoryName}
+              messageCategories={messageCategories}
+              handleCreateCategory={handleCreateCategory}
+            />
+          )
+        }
 
         {/* =========================================
-        ANALYTICS MODULE
-        ========================================= */}
+                MESSAGE MODULE
+                ========================================= */}
 
-{
-  activeModule === "ANALYTICS" && (
+        {
+          activeModule === "MESSAGE" && (
 
-    <AnalyticsSection
+            <MessageSection
 
-      analyticsSearch={analyticsSearch}
-      setAnalyticsSearch={setAnalyticsSearch}
+              groups={classes}
+              categories={messageCategories}
 
-      analyticsClassFilter={analyticsClassFilter}
-      setAnalyticsClassFilter={setAnalyticsClassFilter}
+              selectedGroup={selectedClass}
+              setSelectedGroup={setSelectedClass}
 
-      analyticsCategoryFilter={analyticsCategoryFilter}
-      setAnalyticsCategoryFilter={setAnalyticsCategoryFilter}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
 
-      analyticsStatusFilter={analyticsStatusFilter}
-      setAnalyticsStatusFilter={setAnalyticsStatusFilter}
+              title={title}
+              setTitle={setTitle}
 
-      analyticsSort={analyticsSort}
-      setAnalyticsSort={setAnalyticsSort}
+              message={message}
+              setMessage={setMessage}
 
-      classes={classes}
+              deadline={deadline}
+              setDeadline={setDeadline}
 
-      analyticsCategories={analyticsCategories}
+              onGroupChange={(groupId) => {
 
-      filteredAnalyticsMessages={filteredAnalyticsMessages}
+                setSelectedClass(groupId);
 
-      analytics={analytics}
+                fetchCategories(groupId);
 
-      expandedAnalyticsId={expandedAnalyticsId}
-      setExpandedAnalyticsId={setExpandedAnalyticsId}
+              }}
 
-      selectedAnalyticsView={selectedAnalyticsView}
-      setSelectedAnalyticsView={setSelectedAnalyticsView}
+              handleSendMessage={handleSendMessage}
 
-      allStudentAnalytics={allStudentAnalytics}
+            />
 
-    />
-
-  )
-}
+          )
+        }
 
         {/* =========================================
-        TASKS MODULE
-        ========================================= */}
+                ANALYTICS MODULE
+                ========================================= */}
+
+        {
+          activeModule === "ANALYTICS" && (
+
+            <AnalyticsSection
+
+              analyticsSearch={analyticsSearch}
+              setAnalyticsSearch={setAnalyticsSearch}
+
+              analyticsClassFilter={analyticsClassFilter}
+              setAnalyticsClassFilter={setAnalyticsClassFilter}
+
+              analyticsCategoryFilter={analyticsCategoryFilter}
+              setAnalyticsCategoryFilter={setAnalyticsCategoryFilter}
+
+              analyticsStatusFilter={analyticsStatusFilter}
+              setAnalyticsStatusFilter={setAnalyticsStatusFilter}
+
+              analyticsSort={analyticsSort}
+              setAnalyticsSort={setAnalyticsSort}
+
+              classes={classes}
+
+              analyticsCategories={analyticsCategories}
+
+              filteredAnalyticsMessages={filteredAnalyticsMessages}
+
+              analytics={analytics}
+
+              expandedAnalyticsId={expandedAnalyticsId}
+              setExpandedAnalyticsId={setExpandedAnalyticsId}
+
+              selectedAnalyticsView={selectedAnalyticsView}
+              setSelectedAnalyticsView={setSelectedAnalyticsView}
+
+              allStudentAnalytics={allStudentAnalytics}
+
+            />
+
+          )
+        }
+
+        {/* =========================================
+                TASKS MODULE
+                ========================================= */}
 
         {/* TASKS */}
 
         {/* TASK MANAGEMENT */}
 
-{
-  activeModule === "TASKS" && (
+        {
+          activeModule === "TASKS" && (
 
-    <TasksSection
+            <TasksSection
 
-      setShowTaskModal={setShowTaskModal}
+              setShowTaskModal={setShowTaskModal}
 
-      loadingTasks={loadingTasks}
+              loadingTasks={loadingTasks}
 
-      tasks={tasks}
+              tasks={tasks}
 
-      taskSearch={taskSearch}
-      setTaskSearch={setTaskSearch}
+              taskSearch={taskSearch}
+              setTaskSearch={setTaskSearch}
 
-      taskClassFilter={taskClassFilter}
-      setTaskClassFilter={setTaskClassFilter}
+              taskClassFilter={taskClassFilter}
+              setTaskClassFilter={setTaskClassFilter}
 
-      taskStudentFilter={taskStudentFilter}
-      setTaskStudentFilter={setTaskStudentFilter}
+              taskStudentFilter={taskStudentFilter}
+              setTaskStudentFilter={setTaskStudentFilter}
 
-      taskStatusFilter={taskStatusFilter}
-      setTaskStatusFilter={setTaskStatusFilter}
+              taskStatusFilter={taskStatusFilter}
+              setTaskStatusFilter={setTaskStatusFilter}
 
-      taskPriorityFilter={taskPriorityFilter}
-      setTaskPriorityFilter={setTaskPriorityFilter}
+              taskPriorityFilter={taskPriorityFilter}
+              setTaskPriorityFilter={setTaskPriorityFilter}
 
-      taskSortOption={taskSortOption}
-      setTaskSortOption={setTaskSortOption}
+              taskSortOption={taskSortOption}
+              setTaskSortOption={setTaskSortOption}
 
-      classNames={classNames}
-      studentNames={studentNames}
+              classNames={classNames}
+              studentNames={studentNames}
 
-      filteredTasks={filteredTasks}
+              filteredTasks={filteredTasks}
 
-      expandedTaskId={expandedTaskId}
-      setExpandedTaskId={setExpandedTaskId}
+              expandedTaskId={expandedTaskId}
+              setExpandedTaskId={setExpandedTaskId}
 
-      fetchTaskTimeline={fetchTaskTimeline}
+              fetchTaskTimeline={fetchTaskTimeline}
 
-      timelineUpdates={timelineUpdates}
+              timelineUpdates={timelineUpdates}
 
-    />
+            />
 
-  )
-}
+          )
+        }
 
         {/* =========================================
         Class Dashboard
         ========================================= */}
 
-      {
-        activeModule === "CLASS_DASHBOARD" && (
-
-          <ClassDashboardSection
-
-            dashboardSummary={dashboardSummary}
-
-            dashboardClassFilter={dashboardClassFilter}
-            setDashboardClassFilter={setDashboardClassFilter}
-
-            dashboardStudentFilter={dashboardStudentFilter}
-            setDashboardStudentFilter={setDashboardStudentFilter}
-
-            dashboardCompletedFilter={dashboardCompletedFilter}
-            setDashboardCompletedFilter={setDashboardCompletedFilter}
-
-            dashboardPendingFilter={dashboardPendingFilter}
-            setDashboardPendingFilter={setDashboardPendingFilter}
-
-            classes={classes}
-
-            filteredDashboardData={filteredDashboardData}
-
-            viewPendingTasks={viewPendingTasks}
-
-          />
-
-        )
-      }
-
-      
-
-        {/* =========================================
-        EVENTS MODULE
-        ========================================= */}
-
         {
-          activeModule ===
-          "EVENTS" && (
+          activeModule === "CLASS_DASHBOARD" && (
 
-          <div className="flex min-h-[60vh] items-center justify-center">
+            <ClassDashboardSection
 
-            <div className="rounded-2xl bg-white p-16 text-center shadow-xl">
+              dashboardSummary={dashboardSummary}
 
-              <h1 className="text-5xl font-bold text-blue-600">
+              dashboardClassFilter={dashboardClassFilter}
+              setDashboardClassFilter={setDashboardClassFilter}
 
-                Coming Soon
+              dashboardStudentFilter={dashboardStudentFilter}
+              setDashboardStudentFilter={setDashboardStudentFilter}
 
-              </h1>
+              dashboardCompletedFilter={dashboardCompletedFilter}
+              setDashboardCompletedFilter={setDashboardCompletedFilter}
 
-              <p className="mt-4 text-xl text-gray-600">
+              dashboardPendingFilter={dashboardPendingFilter}
+              setDashboardPendingFilter={setDashboardPendingFilter}
 
-                Event Management Module
+              classes={classes}
 
-              </p>
+              filteredDashboardData={filteredDashboardData}
 
-            </div>
+              viewPendingTasks={viewPendingTasks}
 
-          </div>
-        )}
-
-      </div>
-
-      {/* TASK MODAL */}
-
-      {
-        showTaskModal && (
-
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-
-          <div className="w-full max-w-2xl rounded-2xl bg-white p-8 shadow-2xl">
-
-            {/* HEADER */}
-
-            <div className="mb-6 flex items-center justify-between">
-
-              <div>
-
-                <h2 className="text-3xl font-bold text-gray-800">
-
-                  Create Task
-
-                </h2>
-
-                <p className="mt-1 text-gray-500">
-
-                  Assign task to student
-
-                </p>
-
-              </div>
-
-              <button
-                onClick={() =>
-                  setShowTaskModal(
-                    false
-                  )
-                }
-                className="text-2xl font-bold text-gray-500 hover:text-gray-700"
-              >
-
-                ×
-
-              </button>
-
-            </div>
-
-            {/* FORM */}
-
-            <div className="space-y-5">
-
-              {/* CLASS */}
-
-              <div>
-
-                <label className="mb-2 block font-semibold text-gray-700">
-
-                  Select Class
-
-                </label>
-
-                <select
-                  value={
-                    selectedTaskClass
-                  }
-                  onChange={(e) => {
-
-                    setSelectedTaskClass(
-                      e.target.value
-                    );
-
-                    fetchTaskStudents(
-                      e.target.value
-                    );
-                  }}
-                  className="w-full rounded-xl border p-3"
-                >
-
-                  <option value="">
-
-                    Select Class
-
-                  </option>
-
-                  {
-                    classes.map(
-                      (
-                        cls: any
-                      ) => (
-
-                        <option
-                          key={cls.id}
-                          value={cls.id}
-                        >
-
-                          {
-                            cls.name
-                          }{" "}
-
-                          {
-                            cls.section
-                          }
-
-                        </option>
-                      )
-                    )
-                  }
-
-                </select>
-
-              </div>
-
-              {/* STUDENT */}
-
-              <div>
-
-                <label className="mb-2 block font-semibold text-gray-700">
-
-                  Select Student
-
-                </label>
-
-                <select
-                  value={
-                    selectedStudent
-                  }
-                  onChange={(e) =>
-                    setSelectedStudent(
-                      e.target.value
-                    )
-                  }
-                  className="w-full rounded-xl border p-3"
-                >
-
-                  <option value="">
-
-                    Select Student
-
-                  </option>
-
-                  {
-                    classStudents.map(
-                      (
-                        student: any
-                      ) => (
-
-                        <option
-                          key={student.id}
-                          value={student.id}
-                        >
-
-                          {
-                            student.full_name
-                          }{" "}
-                          (
-                          {
-                            student.enrollment_number
-                          }
-                          )
-
-                        </option>
-                      )
-                    )
-                  }
-
-                </select>
-
-              </div>
-
-              {/* TITLE */}
-
-              <div>
-
-                <label className="mb-2 block font-semibold text-gray-700">
-
-                  Task Title
-
-                </label>
-
-                <input
-                  type="text"
-                  value={taskTitle}
-                  onChange={(e) =>
-                    setTaskTitle(
-                      e.target.value
-                    )
-                  }
-                  placeholder="Enter task title"
-                  className="w-full rounded-xl border p-3"
-                />
-
-              </div>
-
-              {/* DESCRIPTION */}
-
-              <div>
-
-                <label className="mb-2 block font-semibold text-gray-700">
-
-                  Description
-
-                </label>
-
-                <textarea
-                  value={
-                    taskDescription
-                  }
-                  onChange={(e) =>
-                    setTaskDescription(
-                      e.target.value
-                    )
-                  }
-                  placeholder="Enter task description"
-                  rows={5}
-                  className="w-full rounded-xl border p-3"
-                />
-
-              </div>
-
-              {/* PRIORITY */}
-
-              <div>
-
-                <label className="mb-2 block font-semibold text-gray-700">
-
-                  Priority
-
-                </label>
-
-                <select
-                  value={
-                    taskPriority
-                  }
-                  onChange={(e) =>
-                    setTaskPriority(
-                      e.target.value
-                    )
-                  }
-                  className="w-full rounded-xl border p-3"
-                >
-
-                  <option value="LOW">
-
-                    LOW
-
-                  </option>
-
-                  <option value="MEDIUM">
-
-                    MEDIUM
-
-                  </option>
-
-                  <option value="HIGH">
-
-                    HIGH
-
-                  </option>
-
-                </select>
-
-              </div>
-
-              {/* DEADLINE */}
-
-              <div>
-
-                <label className="mb-2 block font-semibold text-gray-700">
-
-                  Deadline
-
-                </label>
-
-                <input
-                  type="datetime-local"
-                  value={
-                    taskDeadline
-                  }
-                  onChange={(e) =>
-                    setTaskDeadline(
-                      e.target.value
-                    )
-                  }
-                  className="w-full rounded-xl border p-3"
-                />
-
-              </div>
-
-              {/* ACTIONS */}
-
-              <div className="flex justify-end gap-4 pt-4">
-
-                <button
-                  onClick={() =>
-                    setShowTaskModal(
-                      false
-                    )
-                  }
-                  className="rounded-xl bg-gray-300 px-5 py-3 font-semibold text-gray-800"
-                >
-
-                  Cancel
-
-                </button>
-
-                <button
-                  onClick={
-                    handleCreateTask
-                  }
-                  className="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700"
-                >
-
-                  Create Task
-
-                </button>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-      )}
-        {/* =========================================
-        PENDING TASKS MODAL
-        ========================================= */}
-
-        {
-          showPendingTasksModal && (
-
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-
-              <div className="w-full max-w-5xl rounded-2xl bg-white p-8 shadow-2xl">
-
-                {/* HEADER */}
-
-                <div className="mb-6 flex items-center justify-between">
-
-                  <div>
-
-                    <h2 className="text-3xl font-bold text-blue-700">
-
-                      Pending Tasks
-
-                    </h2>
-
-                    <p className="text-gray-500">
-
-                      {selectedStudentName}
-
-                    </p>
-
-                  </div>
-
-                  <button
-                    onClick={() =>
-                      setShowPendingTasksModal(false)
-                    }
-                    className="text-2xl font-bold text-gray-500 hover:text-red-600"
-                  >
-
-                    ✕
-
-                  </button>
-
-                </div>
-
-                {/* TABLE */}
-
-                <div className="overflow-x-auto">
-
-                  <table className="min-w-full border">
-
-                    <thead className="bg-gray-100">
-
-                      <tr>
-
-                        <th className="border p-3">
-                          Task Title
-                        </th>
-
-                        <th className="border p-3">
-                          Priority
-                        </th>
-
-                        <th className="border p-3">
-                          Status
-                        </th>
-
-                        <th className="border p-3">
-                          Progress
-                        </th>
-
-                        <th className="border p-3">
-                          Deadline
-                        </th>
-
-                      </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                      {
-                        selectedStudentPendingTasks.length === 0 ? (
-
-                          <tr>
-
-                            <td
-                              colSpan={5}
-                              className="p-6 text-center text-gray-500"
-                            >
-
-                              No Pending Tasks
-
-                            </td>
-
-                          </tr>
-
-                        ) : (
-
-                          selectedStudentPendingTasks.map(
-                            (task:any) => (
-
-                              <tr key={task.id}>
-
-                                <td className="border p-3">
-
-                                  {task.title}
-
-                                </td>
-
-                                <td className="border p-3 text-center">
-
-                                  {task.priority}
-
-                                </td>
-
-                                <td className="border p-3 text-center">
-
-                                  {task.status}
-
-                                </td>
-
-                                <td className="border p-3 text-center">
-
-                                  {task.current_progress || 0}%
-
-                                </td>
-
-                                <td className="border p-3 text-center">
-
-                                  {
-                                    formatDateTime(
-                                      task.deadline
-                                    )
-                                  }
-
-                                </td>
-
-                              </tr>
-
-                            )
-                          )
-
-                        )
-                      }
-
-                    </tbody>
-
-                  </table>
-
-                </div>
-
-              </div>
-
-            </div>
+            />
 
           )
         }
 
 
 
-      {/* PROFILE MODAL */}
+        {/* =========================================
+        EVENTS MODULE
+        ========================================= */}
 
-      {
-        showProfileModal && (
+        {
+          activeModule === "EVENTS" && (
+            <EventsSection />
+          )
+        }
 
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        {/* TASK MODAL */}
 
-          <div className="w-full max-w-lg rounded bg-white p-6 shadow-lg">
+{
+  showTaskModal && (
 
-            <h2 className="mb-5 text-2xl font-bold">
+    <TaskModal
 
-              Edit Profile
+      setShowTaskModal={setShowTaskModal}
 
-            </h2>
+      selectedTaskClass={selectedTaskClass}
+      setSelectedTaskClass={setSelectedTaskClass}
 
-            <div className="mb-4">
+      fetchTaskStudents={fetchTaskStudents}
 
-              <label className="mb-1 block font-semibold text-gray-700">
+      classes={classes}
 
-                Faculty ID
+      selectedStudent={selectedStudent}
+      setSelectedStudent={setSelectedStudent}
 
-              </label>
+      classStudents={classStudents}
 
-              <input
-                type="text"
-                value={profile?.employee_id || ""}
-                disabled
-                className="w-full rounded border bg-gray-100 p-3 text-gray-600"
-              />
+      taskTitle={taskTitle}
+      setTaskTitle={setTaskTitle}
 
-            </div>
+      taskDescription={taskDescription}
+      setTaskDescription={setTaskDescription}
 
-            <input
-              type="text"
-              placeholder="Full Name"
-              value={fullName}
-              onChange={(e) =>
-                setFullName(
-                  e.target.value
-                )
-              }
-              className="mb-4 w-full rounded border p-3"
-            />
+      taskPriority={taskPriority}
+      setTaskPriority={setTaskPriority}
 
-            <input
-              type="text"
-              placeholder="Mobile Number"
-              value={mobileNumber}
-              onChange={(e) =>
-                setMobileNumber(
-                  e.target.value
-                )
-              }
-              className="mb-4 w-full rounded border p-3"
-            />
+      taskDeadline={taskDeadline}
+      setTaskDeadline={setTaskDeadline}
 
-            <textarea
-              placeholder="Address"
-              value={address}
-              onChange={(e) =>
-                setAddress(
-                  e.target.value
-                )
-              }
-              className="mb-4 w-full rounded border p-3"
-              rows={4}
-            />
+      handleCreateTask={handleCreateTask}
 
-            <div className="flex justify-end gap-3">
+    />
 
-              <button
-                onClick={() =>
-                  setShowProfileModal(
-                    false
-                  )
-                }
-                className="rounded bg-gray-400 px-4 py-2 text-white"
-              >
-
-                Cancel
-
-              </button>
-
-              <button
-                onClick={
-                  handleUpdateProfile
-                }
-                className="rounded bg-green-600 px-4 py-2 text-white"
-              >
-
-                Save
-
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-      )}
-    </div>
-  );
+  )
 }
+        {/* =========================================
+        PENDING TASKS MODAL
+        ========================================= */}
+
+{
+  showPendingTasksModal && (
+
+    <PendingTasksModal
+
+      selectedStudentName={selectedStudentName}
+
+      setShowPendingTasksModal={setShowPendingTasksModal}
+
+      selectedStudentPendingTasks={selectedStudentPendingTasks}
+
+    />
+
+  )
+}
+
+
+
+        {/* PROFILE MODAL */}
+
+    {
+      showProfileModal && (
+
+        <ProfileModal
+
+          profile={profile}
+
+          fullName={fullName}
+          setFullName={setFullName}
+
+          mobileNumber={mobileNumber}
+          setMobileNumber={setMobileNumber}
+
+          address={address}
+          setAddress={setAddress}
+
+          setShowProfileModal={setShowProfileModal}
+
+          handleUpdateProfile={handleUpdateProfile}
+
+        />
+
+      )
+    }
+
+      </div>
+      
+    </div>
+    );
+  }
