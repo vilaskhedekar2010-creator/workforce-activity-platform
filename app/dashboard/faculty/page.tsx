@@ -6,27 +6,37 @@ import {
 } from "react";
 
 import { useRouter } from "next/navigation";
-import { formatDateTime } from "@/lib/utils/dateTime";
 
-import { supabase } from "@/lib/supabase-client";
-import { checkUserStatus } from "@/lib/checkUserStatus";
-import HomeSection from "@/dashboard/faculty/components/HomeSection";
-import GroupsSection from "@/dashboard/faculty/components/GroupsSection";
-import CategorySection from "@/dashboard/faculty/components/CategorySection";
-import MessageSection from "@/dashboard/faculty/components/MessageSection";
 import AnalyticsSection from "@/dashboard/faculty/components/AnalyticsSection";
+import CategorySection from "@/dashboard/faculty/components/CategorySection";
 import ClassDashboardSection from "@/dashboard/faculty/components/ClassDashboardSection";
-import TasksSection from "@/dashboard/faculty/components/TasksSection";
 import EventsSection from "@/dashboard/faculty/components/EventsSection";
-import TaskModal from "@/dashboard/faculty/components/TaskModal";
+import GroupsSection from "@/dashboard/faculty/components/GroupsSection";
+import HomeSection from "@/dashboard/faculty/components/HomeSection";
+import MessageSection from "@/dashboard/faculty/components/MessageSection";
 import PendingTasksModal from "@/dashboard/faculty/components/PendingTasksModal";
 import ProfileModal from "@/dashboard/faculty/components/ProfileModal";
+import TaskModal from "@/dashboard/faculty/components/TaskModal";
+import TasksSection from "@/dashboard/faculty/components/TasksSection";
+import { checkUserStatus } from "@/lib/checkUserStatus";
+import { supabase } from "@/lib/supabase-client";
+
+import { DEFAULT_SERVICES } from "@/shared/constants/default-services";
+import { SERVICES } from "@/shared/constants/services";
+import { getUserServices } from "@/services/permission.service";
 
 export default function
   FacultyDashboard() {
 
   const router =
-    useRouter();
+    useRouter(); //1
+
+  //const allowedServices: string[] = DEFAULT_SERVICES.FACULTY;
+
+  const [allowedServices, setAllowedServices] = useState<string[]>(DEFAULT_SERVICES.FACULTY);
+
+
+  //const allowedServices: string[] = await getUserServices(user.id);
 
   // =========================================
   // USER
@@ -88,7 +98,7 @@ export default function
   const [
     analyticsModalTitle,
     setAnalyticsModalTitle,
-  ] = useState("");
+  ] = useState(""); // 1
 
 
   // =========================================
@@ -373,6 +383,28 @@ export default function
     selectedStudentName,
     setSelectedStudentName,
   ] = useState("");
+
+  const fetchUserServices = async (userId: string) => {
+
+    console.log("Loading permissions for:", userId);
+
+    const services = await getUserServices(userId);
+
+    console.log("Services from DB:", services);
+
+    if (services.length > 0) {
+
+      setAllowedServices(services);
+
+    }
+
+  };
+
+  useEffect(() => {
+
+    console.log("allowedServices changed:", allowedServices);
+
+  }, [allowedServices]);
 
   // CLASS DASHBOARD RELATED
 
@@ -980,6 +1012,8 @@ export default function
       }
 
       setProfile(data);
+
+      await fetchUserServices(data.id);
       /*Following 4 lines added for debugging purposes --;*/
 
       console.log("USER AUTH ID");
@@ -2652,24 +2686,30 @@ export default function
 
           {/* CLASS_DASHBOARD */}
 
-          <button
-            onClick={() => {
+          {
+            allowedServices.includes(SERVICES.TASK_DASHBOARD) && (
 
-              setActiveModule(
-                "CLASS_DASHBOARD"
-              );
+              <button
+                onClick={() => {
 
-              loadClassDashboard();
+                  setActiveModule(
+                    "CLASS_DASHBOARD"
+                  );
 
-            }}
-            className={`rounded px-4 py-3 text-left transition ${activeModule ===
-              "CLASS_DASHBOARD"
-              ? "bg-blue-600"
-              : "hover:bg-gray-800"
-              }`}
-          >
-            Class Dashboard
-          </button>
+                  loadClassDashboard();
+
+                }}
+                className={`rounded px-4 py-3 text-left transition ${
+                  activeModule === "CLASS_DASHBOARD"
+                    ? "bg-blue-600"
+                    : "hover:bg-gray-800"
+                }`}
+              >
+                Class Dashboard
+              </button>
+
+            )
+          }
 
           {/* EVENTS */}
 
@@ -2788,25 +2828,33 @@ export default function
 
         </div>
 
+
+
         {/* =========================================
         HOME MODULE
         ========================================= */}
-
         {
-          activeModule === "HOME" && (
-            <HomeSection
-              stats={{
-                classes,
-                sentMessages,
-              }}
-            />
+          allowedServices.includes(SERVICES.HOME) && (
+          // Existing Home menu item
+                
+              activeModule === "HOME" && (
+                <HomeSection
+                  stats={{
+                    classes,
+                    sentMessages,
+                  }}
+                />
+              )
           )
         }
+
+
 
         {/* =========================================
                 CLASSES MODULE
                 ========================================= */}
         {
+          allowedServices.includes(SERVICES.GROUPS) &&
           activeModule === "CLASSES" && (
             <GroupsSection
               groups={classes}
@@ -2822,28 +2870,29 @@ export default function
                 CATEGORY MODULE
                 ========================================= */}
 
-        {
-          activeModule === "CATEGORY" && (
-            <CategorySection
-              groups={classes}
-              selectedGroup={selectedClass}
-              onGroupChange={(groupId) => {
-                setSelectedClass(groupId);
-                fetchCategories(groupId);
-              }}
-              categoryName={categoryName}
-              setCategoryName={setCategoryName}
-              messageCategories={messageCategories}
-              handleCreateCategory={handleCreateCategory}
-            />
-          )
-        }
+          {
+            allowedServices.includes(SERVICES.CATEGORY_MANAGEMENT) &&
+            activeModule === "CATEGORY" && (
+              <CategorySection
+                groups={classes}
+                selectedGroup={selectedClass}
+                onGroupChange={(groupId) => {
+                  setSelectedClass(groupId);
+                  fetchCategories(groupId);
+                }}
+                categoryName={categoryName}
+                setCategoryName={setCategoryName}
+                messageCategories={messageCategories}
+                handleCreateCategory={handleCreateCategory}
+              />
+            )
+          }
 
         {/* =========================================
                 MESSAGE MODULE
                 ========================================= */}
-
         {
+          allowedServices.includes(SERVICES.SEND_MESSAGE) &&
           activeModule === "MESSAGE" && (
 
             <MessageSection
@@ -2884,8 +2933,8 @@ export default function
         {/* =========================================
                 ANALYTICS MODULE
                 ========================================= */}
-
         {
+          allowedServices.includes(SERVICES.MESSAGE_ANALYTICS) &&
           activeModule === "ANALYTICS" && (
 
             <AnalyticsSection
@@ -2935,6 +2984,7 @@ export default function
         {/* TASK MANAGEMENT */}
 
         {
+          allowedServices.includes(SERVICES.TASKS) &&
           activeModule === "TASKS" && (
 
             <TasksSection
@@ -2985,6 +3035,7 @@ export default function
         ========================================= */}
 
         {
+          allowedServices.includes(SERVICES.TASK_DASHBOARD) &&
           activeModule === "CLASS_DASHBOARD" && (
 
             <ClassDashboardSection
@@ -3020,11 +3071,12 @@ export default function
         EVENTS MODULE
         ========================================= */}
 
-        {
-          activeModule === "EVENTS" && (
-            <EventsSection />
-          )
-        }
+      {
+        allowedServices.includes(SERVICES.EVENTS) &&
+        activeModule === "EVENTS" && (
+          <EventsSection />
+        )
+      }
 
         {/* TASK MODAL */}
 
