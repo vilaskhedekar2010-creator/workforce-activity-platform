@@ -1,6 +1,8 @@
 // UserManagement.tsx
 import AddUserModal from "../dialogs/AddUserModal";
 import ResetPasswordModal from "../dialogs/ResetPasswordModal";
+import ManageServicesDialog from "../dialogs/ManageServicesDialog";
+import { useState } from "react";
 
 type UserManagementProps = {
   userManagement: {
@@ -26,13 +28,45 @@ type UserManagementProps = {
   }
 };
 
-export default function UserManagement({userManagement}:UserManagementProps){
-const {
-totalUsers,totalFaculty,totalStudents,activeUsers,inactiveUsers,suspendedUsers,
-searchTerm,setSearchTerm,roleFilter,setRoleFilter,statusFilter,setStatusFilter,
-filteredUsers,updateUserStatus,setSelectedUserId,setShowResetPasswordModal,
-setShowAddUserModal,addUser,resetPasswordModal
-}=userManagement;
+export default function UserManagement({
+  userManagement,
+}: UserManagementProps) {
+
+  const {
+    totalUsers,
+    totalFaculty,
+    totalStudents,
+    activeUsers,
+    inactiveUsers,
+    suspendedUsers,
+    searchTerm,
+    setSearchTerm,
+    roleFilter,
+    setRoleFilter,
+    statusFilter,
+    setStatusFilter,
+    filteredUsers,
+    updateUserStatus,
+    setSelectedUserId,
+    setShowResetPasswordModal,
+    setShowAddUserModal,
+    addUser,
+    resetPasswordModal,
+  } = userManagement;
+
+  // =========================================
+  // MANAGE SERVICES DIALOG
+  // =========================================
+
+  const [
+    showManageServicesDialog,
+    setShowManageServicesDialog,
+  ] = useState(false);
+
+  const [
+    selectedUser,
+    setSelectedUser,
+  ] = useState<any>(null);
 
 return (
 <>
@@ -114,6 +148,16 @@ onChange={e=>setStatusFilter(e.target.value)}>
 setSelectedUserId(user.id);
 setShowResetPasswordModal(true);
 }} className="rounded bg-blue-600 px-3 py-1 text-white">Reset Password</button>
+<button
+  onClick={() => {
+    setSelectedUser(user);
+    setShowManageServicesDialog(true);
+  }}
+  className="rounded bg-indigo-600 px-3 py-2 text-white"
+>
+  Manage Services
+</button>
+
 </div>}
 </td>
 </tr>
@@ -125,6 +169,12 @@ setShowResetPasswordModal(true);
 
 <AddUserModal addUser={addUser}/>
 <ResetPasswordModal resetPasswordModal={resetPasswordModal}/>
+
+<ManageServicesDialog
+  open={showManageServicesDialog}
+  onClose={() => setShowManageServicesDialog(false)}
+  user={selectedUser}
+/>
 </>
 );
 }

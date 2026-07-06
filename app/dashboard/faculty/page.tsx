@@ -2558,131 +2558,134 @@ export default function
 
         <div className="mt-5 flex flex-col gap-2 px-4">
 
-          {/* HOME */}
+{/* HOME */}
 
-          <button
-            onClick={() =>
-              setActiveModule(
-                "HOME"
-              )
-            }
-            className={`rounded px-4 py-3 text-left transition ${activeModule ===
-              "HOME"
+{
+  allowedServices.includes(SERVICES.HOME) && (
 
-              ? "bg-blue-600"
+    <button
+      onClick={() =>
+        setActiveModule("HOME")
+      }
+      className={`rounded px-4 py-3 text-left transition ${
+        activeModule === "HOME"
+          ? "bg-blue-600"
+          : "hover:bg-gray-800"
+      }`}
+    >
+      Home
+    </button>
 
-              : "hover:bg-gray-800"
-              }`}
-          >
+  )
+}
 
-            Home
+{/* CLASSES */}
 
-          </button>
+{
+  allowedServices.includes(SERVICES.GROUPS) && (
 
-          {/* CLASSES */}
+    <button
+      onClick={() =>
+        setActiveModule("CLASSES")
+      }
+      className={`rounded px-4 py-3 text-left transition ${
+        activeModule === "CLASSES"
+          ? "bg-blue-600"
+          : "hover:bg-gray-800"
+      }`}
+    >
+      Assigned Classes
+    </button>
 
-          <button
-            onClick={() =>
-              setActiveModule(
-                "CLASSES"
-              )
-            }
-            className={`rounded px-4 py-3 text-left transition ${activeModule ===
-              "CLASSES"
-
-              ? "bg-blue-600"
-
-              : "hover:bg-gray-800"
-              }`}
-          >
-
-            Assigned Classes
-
-          </button>
+  )
+}
 
           {/* CATEGORY */}
 
-          <button
-            onClick={() =>
-              setActiveModule(
-                "CATEGORY"
-              )
-            }
-            className={`rounded px-4 py-3 text-left transition ${activeModule ===
-              "CATEGORY"
+          {
+            allowedServices.includes(SERVICES.CATEGORY_MANAGEMENT) && (
 
-              ? "bg-blue-600"
+              <button
+                onClick={() =>
+                  setActiveModule("CATEGORY")
+                }
+                className={`rounded px-4 py-3 text-left transition ${
+                  activeModule === "CATEGORY"
+                    ? "bg-blue-600"
+                    : "hover:bg-gray-800"
+                }`}
+              >
+                Add Category
+              </button>
 
-              : "hover:bg-gray-800"
-              }`}
-          >
+            )
+          }
 
-            Add Category
+{/* MESSAGE */}
 
-          </button>
+{
+  allowedServices.includes(SERVICES.SEND_MESSAGE) && (
 
-          {/* MESSAGE */}
+    <button
+      onClick={() =>
+        setActiveModule("MESSAGE")
+      }
+      className={`rounded px-4 py-3 text-left transition ${
+        activeModule === "MESSAGE"
+          ? "bg-blue-600"
+          : "hover:bg-gray-800"
+      }`}
+    >
+      Send Message
+    </button>
 
-          <button
-            onClick={() =>
-              setActiveModule(
-                "MESSAGE"
-              )
-            }
-            className={`rounded px-4 py-3 text-left transition ${activeModule ===
-              "MESSAGE"
+  )
+}
 
-              ? "bg-blue-600"
+{/* ANALYTICS */}
 
-              : "hover:bg-gray-800"
-              }`}
-          >
+{
+  allowedServices.includes(SERVICES.MESSAGE_ANALYTICS) && (
 
-            Send Message
+    <button
+      onClick={() => {
 
-          </button>
+        setActiveModule("ANALYTICS");
+        fetchAnalyticsCategories();
 
-          {/* ANALYTICS */}
+      }}
+      className={`rounded px-4 py-3 text-left transition ${
+        activeModule === "ANALYTICS"
+          ? "bg-blue-600"
+          : "hover:bg-gray-800"
+      }`}
+    >
+      Message Analytics
+    </button>
 
-          <button
-            onClick={() => {
+  )
+}
 
-              setActiveModule("ANALYTICS");
-              fetchAnalyticsCategories();
-            }}
-            className={`rounded px-4 py-3 text-left transition ${activeModule ===
-              "ANALYTICS"
+{/* TASKS */}
 
-              ? "bg-blue-600"
+{
+  allowedServices.includes(SERVICES.TASKS) && (
 
-              : "hover:bg-gray-800"
-              }`}
-          >
+    <button
+      onClick={() =>
+        setActiveModule("TASKS")
+      }
+      className={`rounded px-4 py-3 text-left transition ${
+        activeModule === "TASKS"
+          ? "bg-blue-600"
+          : "hover:bg-gray-800"
+      }`}
+    >
+      Tasks
+    </button>
 
-            Message Analytics
-
-          </button>
-
-          {/* TASKS */}
-
-          <button
-            onClick={() =>
-              setActiveModule(
-                "TASKS"
-              )
-            }
-            className={`rounded px-4 py-3 text-left transition ${activeModule ===
-              "TASKS"
-
-              ? "bg-blue-600"
-
-              : "hover:bg-gray-800"
-              }`}
-          >
-
-            Tasks
-
-          </button>
+  )
+}
 
           {/* CLASS_DASHBOARD */}
 
@@ -2713,24 +2716,24 @@ export default function
 
           {/* EVENTS */}
 
-          <button
-            onClick={() =>
-              setActiveModule(
-                "EVENTS"
-              )
-            }
-            className={`rounded px-4 py-3 text-left transition ${activeModule ===
-              "EVENTS"
+          {
+            allowedServices.includes(SERVICES.EVENTS) && (
 
-              ? "bg-blue-600"
+              <button
+                onClick={() => {
+                  setActiveModule("EVENTS");
+                }}
+                className={`rounded px-4 py-3 text-left transition ${
+                  activeModule === "EVENTS"
+                    ? "bg-blue-600"
+                    : "hover:bg-gray-800"
+                }`}
+              >
+                Events
+              </button>
 
-              : "hover:bg-gray-800"
-              }`}
-          >
-
-            Events
-
-          </button>
+            )
+          }
 
         </div>
 
@@ -2798,18 +2801,20 @@ export default function
 
             {/* PROFILE */}
 
-            <button
-              onClick={() =>
-                setShowProfileModal(
-                  true
-                )
-              }
-              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-            >
+            {
+              allowedServices.includes(SERVICES.PROFILE) && (
 
-              Profile
+                <button
+                  onClick={() =>
+                    setShowProfileModal(true)
+                  }
+                  className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+                >
+                  Profile
+                </button>
 
-            </button>
+              )
+            }
 
             {/* LOGOUT */}
 
