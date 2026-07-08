@@ -1,5 +1,9 @@
 "use client";
 
+import { SERVICES } from "@/shared/constants/services";
+import { getUserServices } from "@/services/permission.service";
+
+
 import {
   Fragment,
   useEffect,
@@ -51,6 +55,11 @@ StudentDashboard() {
     address,
     setAddress,
   ] = useState("");
+
+  const [
+  allowedServices,
+  setAllowedServices,
+] = useState<string[]>([]);
 
   // =========================================
   // STUDENT CLASSES
@@ -556,6 +565,18 @@ StudentDashboard() {
           data.address || ""
         );
 
+        await fetchUserServices(
+          data.id
+        );
+        
+        const services =
+          await getUserServices(data.id);
+
+        console.log(
+          "Student Services:",
+          services
+        );
+
         fetchStudentClasses(
           data.id
         );
@@ -607,6 +628,23 @@ StudentDashboard() {
       }
     };
 
+  // =========================================
+  // FETCH USER SERVICES
+  // =========================================
+
+    const fetchUserServices =
+      async (
+        userId: string
+      ) => {
+
+        const services =
+          await getUserServices(userId);
+
+        setAllowedServices(
+          services
+        );
+
+      };
   // =========================================
   // FETCH MESSAGES
   // =========================================
@@ -1286,90 +1324,107 @@ StudentDashboard() {
 
           {/* INBOX */}
 
-          <button
-            onClick={() =>
-              setActiveModule(
+          {allowedServices.includes(SERVICES.INBOX) && (
+
+            <button
+              onClick={() =>
+                setActiveModule(
+                  "INBOX"
+                )
+              }
+              className={`rounded px-4 py-3 text-left transition ${
+                activeModule ===
                 "INBOX"
-              )
-            }
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
-              "INBOX"
 
-                ? "bg-blue-600"
+                  ? "bg-blue-600"
 
-                : "hover:bg-gray-800"
-            }`}
-          >
+                  : "hover:bg-gray-800"
+              }`}
+            >
 
-            Inbox
+              Inbox
 
-          </button>
+            </button>
+
+          )}
 
           {/* TASKS */}
 
-          <button
-            onClick={() =>
-              setActiveModule(
+          {allowedServices.includes(SERVICES.TASKS) && (
+
+            <button
+              onClick={() =>
+                setActiveModule(
+                  "TASKS"
+                )
+              }
+              className={`rounded px-4 py-3 text-left transition ${
+                activeModule ===
                 "TASKS"
-              )
-            }
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
-              "TASKS"
 
-                ? "bg-blue-600"
+                  ? "bg-blue-600"
 
-                : "hover:bg-gray-800"
-            }`}
-          >
+                  : "hover:bg-gray-800"
+              }`}
+            >
 
-            Task Management
+              Task Management
 
-          </button>
-                    {/* EVENTS */}
+            </button>
 
-          <button
-            onClick={() =>
-              setActiveModule(
+          )}
+          
+          {/* EVENTS */}
+
+          {allowedServices.includes(SERVICES.EVENTS) && (
+
+            <button
+              onClick={() =>
+                setActiveModule(
+                  "EVENTS"
+                )
+              }
+              className={`rounded px-4 py-3 text-left transition ${
+                activeModule ===
                 "EVENTS"
-              )
-            }
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
-              "EVENTS"
 
-                ? "bg-blue-600"
+                  ? "bg-blue-600"
 
-                : "hover:bg-gray-800"
-            }`}
-          >
+                  : "hover:bg-gray-800"
+              }`}
+            >
 
-            Event Management
+              Event Management
 
-          </button>
+            </button>
+
+          )}
 
           {/* ANALYTICS */}
 
-          <button
-            onClick={() =>
-              setActiveModule(
+          {allowedServices.includes(SERVICES.MESSAGE_ANALYTICS) && (
+
+            <button
+              onClick={() =>
+                setActiveModule(
+                  "ANALYTICS"
+                )
+              }
+              className={`rounded px-4 py-3 text-left transition ${
+                activeModule ===
                 "ANALYTICS"
-              )
-            }
-            className={`rounded px-4 py-3 text-left transition ${
-              activeModule ===
-              "ANALYTICS"
 
-                ? "bg-blue-600"
+                  ? "bg-blue-600"
 
-                : "hover:bg-gray-800"
-            }`}
-          >
+                  : "hover:bg-gray-800"
+              }`}
+            >
 
-            Analytics
+              Analytics
 
-          </button>
+            </button>
+
+          )}
 
         </div>
 
@@ -1436,18 +1491,22 @@ StudentDashboard() {
 
             {/* PROFILE */}
 
-            <button
-              onClick={() =>
-                setShowProfileModal(
-                  true
-                )
-              }
-              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-            >
+            {allowedServices.includes(SERVICES.PROFILE) && (
 
-              Profile
+              <button
+                onClick={() =>
+                  setShowProfileModal(
+                    true
+                  )
+                }
+                className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              >
 
-            </button>
+                Profile
+
+              </button>
+
+            )}
 
             {/* LOGOUT */}
 

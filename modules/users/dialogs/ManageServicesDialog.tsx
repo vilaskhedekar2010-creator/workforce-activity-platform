@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { ALL_SERVICES } from "@/shared/constants/services";
+import { ALL_SERVICES } from "@/shared/constants/all-services";
+
 
 import {
   getUserServices,
@@ -92,40 +93,49 @@ const handleSave = async () => {
         {/* Services will be added here */}
         <div className="mt-6 grid grid-cols-2 gap-3">
 
-            {ALL_SERVICES.map((service) => (
+          {
+            ALL_SERVICES.map((service) => (
 
-                <label
+              <label
                 key={service.code}
-                className="flex items-center gap-2 rounded border p-2 hover:bg-gray-50"
-                >
+                className="flex items-center gap-2 rounded border p-3 cursor-pointer"
+              >
 
                 <input
-                    type="checkbox"
-                    checked={selectedServices.includes(service.code)}
-                    onChange={() => {
+                  type="checkbox"
+                  checked={selectedServices.includes(service.code)}
+                  onChange={(e) => {
 
-                            if (selectedServices.includes(service.code)) {
-                                setSelectedServices(
-                                selectedServices.filter(
-                                    (s) => s !== service.code
-                                )
-                                );
-                            } else {
-                                setSelectedServices([
-                                ...selectedServices,
-                                service.code,
-                                ]);
-                            }
-                      }}
+                    if (e.target.checked) {
+
+                      setSelectedServices([
+                        ...selectedServices,
+                        service.code,
+                      ]);
+
+                    } else {
+
+                      setSelectedServices(
+
+                        selectedServices.filter(
+                          s => s !== service.code
+                        )
+
+                      );
+
+                    }
+
+                  }}
                 />
 
-                <span>{service.name}</span>
+                {service.label}
 
-                </label>
+              </label>
 
-            ))}
+            ))
+          }
 
-            </div>
+        </div>
 
         <div className="mt-6 flex justify-end gap-3">
 

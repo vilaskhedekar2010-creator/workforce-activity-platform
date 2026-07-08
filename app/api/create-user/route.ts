@@ -21,6 +21,11 @@ export async function POST(
       faculty_id,
     } = body;
 
+    console.log("================================");
+    console.log("ROLE RECEIVED:", role);
+    console.log("DEFAULT STUDENT:", DEFAULT_SERVICES.STUDENT);
+    console.log("================================");
+
     const {
       data,
       error,
@@ -108,6 +113,8 @@ export async function POST(
         services = [];
 
     }
+
+    console.log("SERVICES TO INSERT:", services);
 
     if (services.length > 0) {
 
