@@ -13,9 +13,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 
-import { Input } from "@/components/ui/input";
-
-import { Label } from "@/components/ui/label";
+import GroupForm from "../components/GroupForm";
 
 interface GroupDialogProps {
 
@@ -88,27 +86,13 @@ export default function GroupDialog({
 
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
+        <GroupForm
 
-          <div>
+          name={name}
 
-            <Label>
+          onNameChange={setName}
 
-              Group Name
-
-            </Label>
-
-            <Input
-              value={name}
-              onChange={(e) =>
-                setName(e.target.value)
-              }
-              placeholder="Enter Group Name"
-            />
-
-          </div>
-
-        </div>
+        />
 
         <DialogFooter>
 

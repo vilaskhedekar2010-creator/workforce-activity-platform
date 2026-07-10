@@ -39,31 +39,41 @@ export function useGroups() {
 
   };
 
-  const editGroup = async (
+  const updateGroup = async (
 
     id: string,
 
-    currentName: string
+    name: string
 
   ) => {
 
-    const newName = prompt(
+    if (!name.trim()) return;
 
-      "Update Group Name",
+    await service.updateGroup(id, name);
 
-      currentName
+    await loadGroups();
 
-    );
+  };
 
-    if (!newName) return;
+  const archiveGroup = async (
 
-    await service.updateGroup(
+    id: string
 
-      id,
+  ) => {
 
-      newName
+    await service.archiveGroup(id);
 
-    );
+    await loadGroups();
+
+  };
+
+  const restoreGroup = async (
+
+    id: string
+
+  ) => {
+
+    await service.restoreGroup(id);
 
     await loadGroups();
 
@@ -75,7 +85,13 @@ export function useGroups() {
 
     addGroup,
 
-    editGroup,
+    updateGroup,
+
+    archiveGroup,
+
+    restoreGroup,
+
+    refreshGroups: loadGroups,
 
   };
 

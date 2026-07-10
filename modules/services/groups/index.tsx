@@ -4,9 +4,11 @@ import { useState } from "react";
 
 import { useGroups } from "./hooks/useGroups";
 
+import GroupToolbar from "./components/GroupToolbar";
+import GroupList from "./components/GroupList";
 import GroupDialog from "./dialogs/GroupDialog";
 
-import GroupList from "./components/GroupList";
+import type { Group } from "./types/group.types";
 
 export default function Groups() {
 
@@ -16,40 +18,129 @@ export default function Groups() {
 
     addGroup,
 
-    editGroup,
+    updateGroup,
+
+    archiveGroup,
+
+    restoreGroup,
 
   } = useGroups();
 
   const [open, setOpen] = useState(false);
 
+  const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
+
+  const handleCreate = () => {
+
+    setSelectedGroup(null);
+
+    setOpen(true);
+
+  };
+
+  const handleEdit = (
+
+    group: Group
+
+  ) => {
+
+    setSelectedGroup(group);
+
+    setOpen(true);
+
+  };
+
+  const handleArchive = async (
+
+    group: Group
+
+  ) => {
+
+    const confirmed = window.confirm(
+
+      `Archive "${group.name}" ?`
+
+    );
+
+    if (!confirmed) return;
+
+    await archiveGroup(group.id);
+
+  };
+
+  const handleRestore = async (
+
+    group: Group
+
+  ) => {
+
+    const confirmed = window.confirm(
+
+      `Restore "${group.name}" ?`
+
+    );
+
+    if (!confirmed) return;
+
+    await restoreGroup(group.id);
+
+  };
+
+  const handleClose = () => {
+
+    setSelectedGroup(null);
+
+    setOpen(false);
+
+  };
+
+  const handleSave = async (
+
+    name: string
+
+  ) => {
+
+    if (selectedGroup) {
+
+      await updateGroup(
+
+        selectedGroup.id,
+
+        name
+
+      );
+
+    } else {
+
+      await addGroup(name);
+
+    }
+
+    handleClose();
+
+  };
+
   return (
 
     <div className="p-6">
 
-      <div className="mb-6 flex items-center justify-between">
+      <GroupToolbar
 
-        <h1 className="text-2xl font-bold">
+        totalGroups={groups.length}
 
-          Groups ({groups.length})
+        onAddGroup={handleCreate}
 
-        </h1>
-
-        <button
-          onClick={() => setOpen(true)}
-          className="rounded bg-blue-600 px-4 py-2 text-white"
-        >
-
-          + Add Group
-
-        </button>
-
-      </div>
+      />
 
       <GroupList
 
         groups={groups}
 
-        onEdit={editGroup}
+        onEdit={handleEdit}
+
+        onArchive={handleArchive}
+
+        onRestore={handleRestore}
 
       />
 
@@ -57,15 +148,23 @@ export default function Groups() {
 
         open={open}
 
-        title="Create Group"
+        title={
 
-        onClose={() => setOpen(false)}
+          selectedGroup
+            ? "Edit Group"
+            : "Create Group"
 
-        onSave={async (name) => {
+        }
 
-          await addGroup(name);
+        initialName={
 
-        }}
+          selectedGroup?.name ?? ""
+
+        }
+
+        onClose={handleClose}
+
+        onSave={handleSave}
 
       />
 

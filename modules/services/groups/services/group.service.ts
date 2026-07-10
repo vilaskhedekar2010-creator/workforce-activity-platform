@@ -43,4 +43,20 @@ export class GroupService {
 
   }
 
+  async archiveGroup(
+    id: string
+  ) {
+
+    return this.repository.archiveGroup(id);
+
+  }
+
+  async restoreGroup(
+    id: string
+  ) {
+
+    return this.repository.restoreGroup(id);
+
+  }
+
 }

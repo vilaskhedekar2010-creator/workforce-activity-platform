@@ -6,7 +6,11 @@ interface GroupListProps {
 
   groups: Group[];
 
-  onEdit: (id: string, name: string) => void;
+  onEdit: (group: Group) => void;
+
+  onArchive: (group: Group) => void;
+
+  onRestore: (group: Group) => void;
 
 }
 
@@ -15,6 +19,10 @@ export default function GroupList({
   groups,
 
   onEdit,
+
+  onArchive,
+
+  onRestore,
 
 }: GroupListProps) {
 
@@ -39,7 +47,7 @@ export default function GroupList({
           </th>
 
           <th className="border px-3 py-2 text-center">
-            Action
+            Actions
           </th>
 
         </tr>
@@ -53,25 +61,55 @@ export default function GroupList({
           <tr key={group.id}>
 
             <td className="border px-3 py-2">
+
               {group.name}
+
             </td>
 
             <td className="border px-3 py-2">
+
               {group.groupType}
+
             </td>
 
             <td className="border px-3 py-2">
+
               {group.status}
+
             </td>
 
             <td className="border px-3 py-2 text-center">
 
-              <button
-                onClick={() => onEdit(group.id, group.name)}
-                className="rounded bg-yellow-500 px-3 py-1 text-white"
-              >
-                Edit
-              </button>
+              <div className="flex justify-center gap-2">
+
+                <button
+                  onClick={() => onEdit(group)}
+                  className="rounded bg-yellow-500 px-3 py-1 text-white"
+                >
+                  Edit
+                </button>
+
+                {group.status === "ACTIVE" ? (
+
+                  <button
+                    onClick={() => onArchive(group)}
+                    className="rounded bg-red-600 px-3 py-1 text-white"
+                  >
+                    Archive
+                  </button>
+
+                ) : (
+
+                  <button
+                    onClick={() => onRestore(group)}
+                    className="rounded bg-green-600 px-3 py-1 text-white"
+                  >
+                    Restore
+                  </button>
+
+                )}
+
+              </div>
 
             </td>
 

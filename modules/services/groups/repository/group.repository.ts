@@ -28,6 +28,7 @@ export class GroupRepository {
       createdBy: group.created_by,
       createdAt: group.created_at,
     }));
+
   }
 
   async createGroup(
@@ -49,6 +50,7 @@ export class GroupRepository {
           department_id: departmentId,
           description,
           created_by: createdBy,
+          status: "ACTIVE",
         },
       ])
       .select()
@@ -59,27 +61,71 @@ export class GroupRepository {
     }
 
     return data;
+
   }
 
   async updateGroup(
-  id: string,
-  name: string
-) {
+    id: string,
+    name: string
+  ) {
 
-  const { data, error } = await supabase
-    .from("groups")
-    .update({
-      name,
-    })
-    .eq("id", id)
-    .select()
-    .single();
+    const { data, error } = await supabase
+      .from("groups")
+      .update({
+        name,
+      })
+      .eq("id", id)
+      .select()
+      .single();
 
-  if (error) {
-    throw error;
+    if (error) {
+      throw error;
+    }
+
+    return data;
+
   }
 
-  return data;
+  async archiveGroup(
+    id: string
+  ) {
 
-}
+    const { data, error } = await supabase
+      .from("groups")
+      .update({
+        status: "ARCHIVED",
+      })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+
+  }
+
+  async restoreGroup(
+    id: string
+  ) {
+
+    const { data, error } = await supabase
+      .from("groups")
+      .update({
+        status: "ACTIVE",
+      })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+
+  }
+
 }
