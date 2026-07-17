@@ -3,6 +3,7 @@ import AddUserModal from "../dialogs/AddUserModal";
 import ResetPasswordModal from "../dialogs/ResetPasswordModal";
 import ManageServicesDialog from "../dialogs/ManageServicesDialog";
 import { useState } from "react";
+import UserStatistics from "./UserStatistics";
 
 type UserManagementProps = {
   userManagement: {
@@ -79,21 +80,14 @@ className="rounded bg-blue-600 px-4 py-2 text-white">
 + Add User
 </button>
 
-<div className="mb-8 mt-6 grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-6">
-{[
-["Total Users",totalUsers,"text-blue-700","bg-blue-50"],
-["Coordinators",totalFaculty,"text-green-700","bg-green-50"],
-["Members",totalStudents,"text-purple-700","bg-purple-50"],
-["Active",activeUsers,"text-emerald-700","bg-emerald-50"],
-["Inactive",inactiveUsers,"text-yellow-700","bg-yellow-50"],
-["Suspended",suspendedUsers,"text-red-700","bg-red-50"],
-].map(([t,v,c,b])=>(
-<div key={String(t)} className={`rounded border p-4 ${b}`}>
-<h3 className="text-sm font-semibold text-gray-600">{t}</h3>
-<p className={`text-3xl font-bold ${c}`}>{String(v)}</p>
-</div>
-))}
-</div>
+<UserStatistics
+  totalUsers={totalUsers}
+  totalFaculty={totalFaculty}
+  totalStudents={totalStudents}
+  activeUsers={activeUsers}
+  inactiveUsers={inactiveUsers}
+  suspendedUsers={suspendedUsers}
+/>
 
 <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
 <input className="rounded border p-3"
