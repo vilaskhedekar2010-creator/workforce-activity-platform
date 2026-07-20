@@ -1,0 +1,1 @@
+export { default } from "@/modules/platform-owner/pages/page";

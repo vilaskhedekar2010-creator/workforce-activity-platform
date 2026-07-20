@@ -1,15 +1,10 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { DEFAULT_SERVICES } from "@/shared/constants/default-services";
+import { syncUserServicesFromRole } from "@/modules/permissions/services/user-permission.service";
 
-export async function POST(
-  request: Request
-) {
-
+export async function POST(request: Request) {
   try {
-
-    const body =
-      await request.json();
+    const body = await request.json();
 
     const {
       email,
@@ -21,31 +16,41 @@ export async function POST(
       faculty_id,
     } = body;
 
-    console.log("================================");
-    console.log("ROLE RECEIVED:", role);
-    console.log("DEFAULT STUDENT:", DEFAULT_SERVICES.STUDENT);
-    console.log("================================");
+    // =====================================================
+    // Create Auth User
+    // =====================================================
 
-    const {
-      data,
-      error,
-    } =
+    const { data: authData, error: authError } =
       await supabaseAdmin.auth.admin.createUser({
-
         email,
-
         password,
-
         email_confirm: true,
-
       });
 
-    if (error) {
+    if (authError) {
+      return NextResponse.json(
+        { error: authError.message },
+        { status: 400 }
+      );
+    }
 
+    const userId = authData.user.id;
+
+    // =====================================================
+    // Find Role
+    // =====================================================
+
+    const { data: roleRecord, error: roleError } =
+      await supabaseAdmin
+        .from("roles")
+        .select("id")
+        .eq("code", role)
+        .single();
+
+    if (roleError || !roleRecord) {
       return NextResponse.json(
         {
-          error:
-            error.message,
+          error: "Role not found",
         },
         {
           status: 400,
@@ -53,13 +58,11 @@ export async function POST(
       );
     }
 
-    const userId =
-      data.user.id;
+    // =====================================================
+    // Create Profile
+    // =====================================================
 
-    const {
-      error:
-        profileError,
-    } =
+    const { error: profileError } =
       await supabaseAdmin
         .from("profiles")
         .insert([
@@ -77,11 +80,9 @@ export async function POST(
         ]);
 
     if (profileError) {
-
       return NextResponse.json(
         {
-          error:
-            profileError.message,
+          error: profileError.message,
         },
         {
           status: 400,
@@ -89,88 +90,53 @@ export async function POST(
       );
     }
 
-    // =========================================
-    // ASSIGN DEFAULT SERVICES
-    // =========================================
+    // =====================================================
+    // Assign Role
+    // =====================================================
 
-    let services: string[] = [];
-
-    switch (role) {
-
-      case "FACULTY":
-        services = DEFAULT_SERVICES.FACULTY;
-        break;
-
-      case "STUDENT":
-        services = DEFAULT_SERVICES.STUDENT;
-        break;
-
-      case "SUPER_ADMIN":
-        services = DEFAULT_SERVICES.SUPER_ADMIN;
-        break;
-
-      default:
-        services = [];
-
-    }
-
-    console.log("SERVICES TO INSERT:", services);
-
-    if (services.length > 0) {
-
-      const rows =
-        services.map(service => ({
-
-          user_id: userId,
-
-          service_code: service,
-
-          is_active: true,
-
-        }));
-
-      const {
-        error:
-          serviceError,
-      } =
-        await supabaseAdmin
-          .from("user_services")
-          .insert(rows);
-
-      if (serviceError) {
-
-        return NextResponse.json(
+    const { error: userRoleError } =
+      await supabaseAdmin
+        .from("user_roles")
+        .insert([
           {
-            error:
-              serviceError.message,
+            user_id: userId,
+            role_id: roleRecord.id,
           },
-          {
-            status: 400,
-          }
-        );
+        ]);
 
-      }
-
+    if (userRoleError) {
+      return NextResponse.json(
+        {
+          error: userRoleError.message,
+        },
+        {
+          status: 400,
+        }
+      );
     }
+
+    // =====================================================
+    // Copy Role Permissions
+    // =====================================================
+
+    await syncUserServicesFromRole(
+      userId,
+      roleRecord.id
+    );
 
     return NextResponse.json({
       success: true,
     });
-
-  } catch (error) {
-
+  } catch (error: any) {
     console.error(error);
 
     return NextResponse.json(
       {
-        error:
-          "Server Error",
+        error: error.message ?? "Server Error",
       },
       {
         status: 500,
       }
     );
-
   }
-
 }

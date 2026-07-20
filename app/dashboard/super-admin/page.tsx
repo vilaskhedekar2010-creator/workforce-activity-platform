@@ -1307,16 +1307,17 @@ const dashboard = {
 
         <div className="flex-1 p-8">
 
-          <DashboardHeader
+        <DashboardHeader
             title="Super Admin Dashboard"
             subtitle="Institution Management Platform"
             fullName={
-              profile?.full_name ||
-              "Super Admin"
+                profile?.full_name ||
+                "Super Admin"
             }
             email={email}
+            role="SUPER_ADMIN"
             onLogout={handleLogout}
-          />
+        />
 
           {/* HOME */}
 

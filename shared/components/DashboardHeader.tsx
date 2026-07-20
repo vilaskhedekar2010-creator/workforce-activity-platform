@@ -5,19 +5,22 @@ export interface DashboardHeaderProps {
   subtitle: string;
   fullName: string;
   email: string;
+  role: string;
   onLogout: () => void;
-};
+}
 
 export default function DashboardHeader({
   title,
   subtitle,
   fullName,
   email,
+  role,
   onLogout,
 }: DashboardHeaderProps) {
   return (
     <header className="mb-8 rounded-2xl border border-slate-200 bg-white shadow-sm">
       <div className="flex flex-col gap-6 p-6 lg:flex-row lg:items-center lg:justify-between">
+
         {/* Left Section */}
         <div className="flex items-center gap-5">
           <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-slate-100">
@@ -48,6 +51,10 @@ export default function DashboardHeader({
 
             <p className="text-sm text-slate-500">
               {email}
+            </p>
+
+            <p className="mt-1 text-xs font-medium uppercase tracking-wide text-blue-600">
+              {role}
             </p>
           </div>
 

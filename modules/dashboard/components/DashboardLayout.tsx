@@ -86,29 +86,22 @@ export default function DashboardLayout({
 
       <div className="flex-1 p-8">
 
-        <DashboardHeader
-
-          title={title}
-
-          subtitle={subtitle}
-
-          fullName={
-
-            dashboard.user?.full_name ??
-
-            "User"
-
-          }
-
-          email={
-
-            dashboard.user?.email ??
-
-            ""
-
-          }
-
-          onLogout={async () => {
+      <DashboardHeader
+        title={title}
+        subtitle={subtitle}
+        fullName={
+          dashboard.user?.full_name ??
+          "User"
+        }
+        email={
+          dashboard.user?.email ??
+          ""
+        }
+        role={
+          dashboard.user?.role ??
+          ""
+        }
+        onLogout={async () => {
 
             // Will move to AuthService later
 
