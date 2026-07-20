@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { usePlatform } from "../hooks/usePlatform";
 
@@ -13,6 +14,8 @@ export default function CreateSuperAdminDialog({
   open,
   onClose,
 }: Props) {
+  const router = useRouter();
+
   const { createSuperAdmin, loading } = usePlatform();
 
   const [fullName, setFullName] = useState("");
@@ -46,14 +49,22 @@ export default function CreateSuperAdminDialog({
         mobile_number: mobileNumber,
       });
 
-      alert("Super Admin created successfully.");
+      alert(
+        "Super Admin created successfully.\n\nYou will now be redirected to the Login page."
+      );
 
+      // Clear form
       setFullName("");
       setEmail("");
       setPassword("");
       setMobileNumber("");
 
+      // Close dialog
       onClose();
+
+      // Redirect to Login
+      router.push("/login");
+
     } catch (error: any) {
       alert(error.message || "Failed to create Super Admin");
     }
