@@ -4,6 +4,7 @@ import { syncUserServicesFromRole } from "@/modules/permissions/services/user-pe
 
 export async function POST(request: Request) {
   try {
+
     const body = await request.json();
 
     const {
@@ -14,6 +15,7 @@ export async function POST(request: Request) {
       mobile_number,
       enrollment_number,
       faculty_id,
+      performedBy,
     } = body;
 
     // =====================================================
@@ -29,8 +31,12 @@ export async function POST(request: Request) {
 
     if (authError) {
       return NextResponse.json(
-        { error: authError.message },
-        { status: 400 }
+        {
+          error: authError.message,
+        },
+        {
+          status: 400,
+        }
       );
     }
 
@@ -48,6 +54,9 @@ export async function POST(request: Request) {
         .single();
 
     if (roleError || !roleRecord) {
+
+      await supabaseAdmin.auth.admin.deleteUser(userId);
+
       return NextResponse.json(
         {
           error: "Role not found",
@@ -80,6 +89,9 @@ export async function POST(request: Request) {
         ]);
 
     if (profileError) {
+
+      await supabaseAdmin.auth.admin.deleteUser(userId);
+
       return NextResponse.json(
         {
           error: profileError.message,
@@ -105,6 +117,14 @@ export async function POST(request: Request) {
         ]);
 
     if (userRoleError) {
+
+      await supabaseAdmin
+        .from("profiles")
+        .delete()
+        .eq("id", userId);
+
+      await supabaseAdmin.auth.admin.deleteUser(userId);
+
       return NextResponse.json(
         {
           error: userRoleError.message,
@@ -116,18 +136,22 @@ export async function POST(request: Request) {
     }
 
     // =====================================================
-    // Copy Role Permissions
+    // Copy Default Permissions
     // =====================================================
 
     await syncUserServicesFromRole(
       userId,
-      roleRecord.id
+      roleRecord.id,
+      performedBy ?? "SYSTEM"
     );
 
     return NextResponse.json({
       success: true,
+      userId,
     });
+
   } catch (error: any) {
+
     console.error(error);
 
     return NextResponse.json(

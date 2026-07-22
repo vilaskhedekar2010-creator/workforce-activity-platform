@@ -10,7 +10,8 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
  */
 export async function syncUserServicesFromRole(
   userId: string,
-  roleId: string
+  roleId: string,
+  assignedBy: string
 ) {
   // Get role permissions
   const { data: roleActions, error: roleError } = await supabaseAdmin
@@ -29,7 +30,11 @@ export async function syncUserServicesFromRole(
   const rolePermissionCodes =
     roleActions?.map((item: any) => item.actions.code) ?? [];
 
-  await syncRolePermissionsForUser(userId, rolePermissionCodes);
+  await syncRolePermissionsForUser(
+    userId,
+    rolePermissionCodes,
+    assignedBy
+  );
 }
 
 /**
@@ -49,7 +54,8 @@ export async function syncUserServicesFromRole(
  */
 export async function syncRolePermissionsForUser(
   userId: string,
-  rolePermissionCodes: string[]
+  rolePermissionCodes: string[],
+  assignedBy: string
 ) {
   // Read current ROLE permissions
   const { data: currentPermissions, error: currentError } =
@@ -84,6 +90,7 @@ export async function syncRolePermissionsForUser(
       service_code: code,
       permission_source: "ROLE",
       is_active: true,
+      assigned_by: assignedBy,
     }));
 
     const { error } = await supabaseAdmin
@@ -103,5 +110,34 @@ export async function syncRolePermissionsForUser(
       .in("service_code", permissionsToRemove);
 
     if (error) throw error;
+  }
+}
+/**
+ * Synchronize ROLE permissions for all users assigned to a role.
+ *
+ * Used when:
+ * - Super Admin updates Role Actions
+ *
+ * USER permissions remain untouched.
+ */
+export async function syncRolePermissions(
+  roleId: string,
+  assignedBy: string
+) {
+  // Find all users assigned to this role
+  const { data: userRoles, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("user_id")
+    .eq("role_id", roleId);
+
+  if (error) throw error;
+
+  // Synchronize each user's ROLE permissions
+  for (const userRole of userRoles ?? []) {
+    await syncUserServicesFromRole(
+      userRole.user_id,
+      roleId,
+      assignedBy
+    );
   }
 }

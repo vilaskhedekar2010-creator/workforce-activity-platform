@@ -64,7 +64,8 @@ export class RoleActionRepository {
 
   async saveRoleActions(
     roleId: string,
-    actionIds: string[]
+    actionIds: string[],
+    currentUserId: string
   ) {
 
     const { data: existingRows, error: existingError } =
@@ -96,6 +97,7 @@ export class RoleActionRepository {
         grantedIds.map((actionId) => ({
           role_id: roleId,
           action_id: actionId,
+          created_by: currentUserId,
         }));
 
       const { error } =
@@ -119,7 +121,8 @@ export class RoleActionRepository {
       if (error) throw error;
 
     }
-        // Audit : Granted
+
+    // Audit : Granted
 
     if (grantedIds.length > 0) {
 
@@ -128,7 +131,7 @@ export class RoleActionRepository {
           role_id: roleId,
           action_id: actionId,
           operation: "GRANTED",
-          performed_by: null,
+          performed_by: currentUserId,
           remarks: null,
         }));
 
@@ -150,7 +153,7 @@ export class RoleActionRepository {
           role_id: roleId,
           action_id: actionId,
           operation: "REVOKED",
-          performed_by: null,
+          performed_by: currentUserId,
           remarks: null,
         }));
 

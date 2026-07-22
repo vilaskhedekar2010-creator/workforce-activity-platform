@@ -10,55 +10,86 @@ import type {
 export class UserService {
 
   async getUsers(): Promise<User[]> {
-
     return await userRepository.getUsers();
-
   }
 
   async getUserById(
     id: string
   ): Promise<User | null> {
-
     return await userRepository.getUserById(id);
-
   }
 
+  /**
+   * Enterprise User Creation
+   *
+   * User creation is performed through the
+   * server-side API so that:
+   *
+   * - Supabase Admin API remains server-side
+   * - Auth User is created
+   * - Profile is created
+   * - Role is assigned
+   * - Default permissions are synchronized
+   */
   async createUser(
     request: CreateUserRequest
   ) {
 
-    return await userRepository.createUser(request);
+    const response = await fetch(
+      "/api/create-user",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
 
+          ...request,
+
+          // Temporary password
+          // Later this will come from
+          // Password Policy Service.
+          password: "ChangeMe@123",
+
+          // Temporary until authentication
+          // integration is completed.
+          performedBy: "SYSTEM",
+
+        }),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error);
+    }
+
+    return result;
   }
 
   async updateUser(
     request: UpdateUserRequest
   ) {
-
     return await userRepository.updateUser(request);
-
   }
 
   async updateUserStatus(
     userId: string,
     status: string
   ) {
-
     await userRepository.updateStatus(
       userId,
       status
     );
-
   }
 
   async deleteUser(
     userId: string
   ) {
-
     await userRepository.deleteUser(
       userId
     );
-
   }
 
   calculateStatistics(
@@ -90,7 +121,6 @@ export class UserService {
       ).length,
 
     };
-
   }
 
   filterUsers(
@@ -127,13 +157,9 @@ export class UserService {
         user.status === status;
 
       return (
-
         matchesSearch &&
-
         matchesRole &&
-
         matchesStatus
-
       );
 
     });

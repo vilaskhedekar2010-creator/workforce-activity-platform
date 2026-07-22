@@ -6,6 +6,7 @@ import {
   Home,
   Users,
   ShieldCheck,
+  KeyRound,
   Building2,
   GraduationCap,
   MessageSquare,
@@ -28,42 +29,47 @@ const menuItems: MenuItem[] = [
   },
   {
     title: "Users",
-    href: "/users",
+    href: "/dashboard/master-data/users",
     icon: Users,
   },
   {
     title: "Roles",
-    href: "/roles",
+    href: "/dashboard/master-data/roles",
     icon: ShieldCheck,
   },
   {
+    title: "Role Actions",
+    href: "/dashboard/master-data/role-actions",
+    icon: KeyRound,
+  },
+  {
     title: "Institutes",
-    href: "/institutes",
+    href: "/dashboard/master-data/institutes",
     icon: Building2,
   },
   {
     title: "Departments",
-    href: "/departments",
+    href: "/dashboard/master-data/departments",
     icon: GraduationCap,
   },
   {
     title: "Messages",
-    href: "/messages",
+    href: "/dashboard/master-data/messages",
     icon: MessageSquare,
   },
   {
     title: "Tasks",
-    href: "/tasks",
+    href: "/dashboard/master-data/tasks",
     icon: ClipboardList,
   },
   {
     title: "Events",
-    href: "/events",
+    href: "/dashboard/master-data/events",
     icon: CalendarDays,
   },
   {
     title: "Settings",
-    href: "/settings",
+    href: "/dashboard/master-data/settings",
     icon: Settings,
   },
 ];

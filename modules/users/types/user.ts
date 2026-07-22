@@ -45,9 +45,9 @@ export interface User {
 
 export interface CreateUserRequest {
 
-  institute_id: string | null;
+  institute_id?: string;
 
-  department_id: string | null;
+  department_id?: string;
 
   full_name: string;
 

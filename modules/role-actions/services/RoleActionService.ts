@@ -1,3 +1,5 @@
+import { supabase } from "@/lib/supabase-client";
+
 import {
   roleActionRepository,
   ActionDto,
@@ -17,17 +19,46 @@ export class RoleActionService {
   getRoleActionIds(
     roleId: string
   ): Promise<string[]> {
-    return roleActionRepository.getRoleActionIds(roleId);
+    return roleActionRepository.getRoleActionIds(
+      roleId
+    );
   }
 
-  saveRoleActions(
+  async saveRoleActions(
     roleId: string,
     actionIds: string[]
   ) {
-    return roleActionRepository.saveRoleActions(
-      roleId,
-      actionIds
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      throw new Error("User is not authenticated.");
+    }
+
+    const response = await fetch(
+      "/api/role-actions/save",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          roleId,
+          actionIds,
+        }),
+      }
     );
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(error);
+    }
+
+    return response.json();
+
   }
 
 }

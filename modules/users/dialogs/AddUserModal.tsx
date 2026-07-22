@@ -4,7 +4,6 @@ type AddUserModalData = {
   newUserName: string;
   newUserEmail: string;
   newUserMobile: string;
-  newUserPassword: string;
   newUserRole: string;
 
   enrollmentNumber: string;
@@ -15,9 +14,7 @@ type AddUserModalData = {
   setNewUserName: (value: string) => void;
   setNewUserEmail: (value: string) => void;
   setNewUserMobile: (value: string) => void;
-  setNewUserPassword: (value: string) => void;
   setNewUserRole: (value: string) => void;
-
   setEnrollmentNumber: (value: string) => void;
   setFacultyId: (value: string) => void;
 
@@ -38,7 +35,6 @@ export default function AddUserModal({
     newUserName,
     newUserEmail,
     newUserMobile,
-    newUserPassword,
     newUserRole,
 
     enrollmentNumber,
@@ -49,7 +45,6 @@ export default function AddUserModal({
     setNewUserName,
     setNewUserEmail,
     setNewUserMobile,
-    setNewUserPassword,
     setNewUserRole,
 
     setEnrollmentNumber,
@@ -108,17 +103,11 @@ export default function AddUserModal({
           className="mb-3 w-full rounded border p-3"
         />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={newUserPassword}
-          onChange={(e) =>
-            setNewUserPassword(
-              e.target.value
-            )
-          }
-          className="mb-3 w-full rounded border p-3"
-        />
+        <div className="mb-4 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
+          <strong>Default Password:</strong> Test@2026
+          <br />
+          User will be required to change the password at first login.
+        </div>
 
         <select
           value={newUserRole}
